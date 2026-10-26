@@ -1,25 +1,28 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Toolbars;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using PopupWindow = UnityEditor.PopupWindow;
 
-public class DialogueWindow : EditorWindow
+public partial class DialogueWindow : EditorWindow
 {
-    private class CharacterList
-    {
-        public string Name;
-        public Color Colour;
-    }
+    MasterDialogueListData _dialogueListData = new MasterDialogueListData();
 
-    private List<CharacterList> characters = new List<CharacterList>
-    {
-        new CharacterList
-        {
-            Name = "Character1",
-            Colour = Color.white
-        }
-    };
+    VisualElement sceneColumn;
+    VisualElement GraphColumn;
+    VisualElement charColumn;
+
+    public List<string> LanguagesList = new List<string> { "English", "German" };
+
+    //private MultiColumnListView _multiColumnListView = new MultiColumnListView();
+    private TwoPaneSplitView leftSplitView;
+    private VisualElement scene;
+    private List<string> scenelist;
+    private TwoPaneSplitView rightSplitView;
 
     [MenuItem("Window/Dialogue")]
     public static void ShowWindow()
@@ -28,30 +31,78 @@ public class DialogueWindow : EditorWindow
         window.titleContent = new GUIContent("Dialogue");
     }
 
+    private void OnEnable()
+    {
+        leftSplitView = new TwoPaneSplitView(0, 200, TwoPaneSplitViewOrientation.Horizontal);
+        rightSplitView = new TwoPaneSplitView(0, 200, TwoPaneSplitViewOrientation.Horizontal);
+        scene = new VisualElement();
+    }
 
     public void CreateGUI()
     {
-     TwoPaneSplitView leftSplitView = new TwoPaneSplitView(0,200, TwoPaneSplitViewOrientation.Horizontal);
-     leftSplitView.style.flexGrow = 1;
-     
-     TwoPaneSplitView rightSplitView = new TwoPaneSplitView(0,200, TwoPaneSplitViewOrientation.Horizontal);
-     rightSplitView.style.flexGrow = 1;
-     
-     VisualElement leftColumn =  new VisualElement();
-     VisualElement middleColumn = new VisualElement();
-     VisualElement rightColumn =  new VisualElement();
-    
-     
-     leftColumn.Add(new Label("Scenes"){style = {unityTextAlign = TextAnchor.MiddleCenter}});
-     middleColumn.Add(new Label("Stuff"){style = {unityTextAlign = TextAnchor.MiddleCenter}});
-     rightColumn.Add(new Label("Characters"){style = {unityTextAlign = TextAnchor.MiddleCenter}});
-     
-     leftSplitView.Add(rightColumn);
-     leftSplitView.Add(middleColumn);
-     
-     rightSplitView.Add(leftColumn);
-     rightSplitView.Add(leftSplitView);
-     
-     rootVisualElement.Add(rightSplitView);
+        CreateToolBar();
+        CreateColumns();
+    }
+
+    private void CreateToolBar()
+    {
+        var toolbar = new Toolbar();
+        LanguageDropDown();
+    }
+
+
+    private void CreateColumns()
+    {
+        sceneColumn = new VisualElement();
+        GraphColumn = new VisualElement();
+        charColumn = new VisualElement();
+
+
+        sceneColumn.Add(SceneRow());
+        charColumn.Add(CharacterRow());
+
+        GraphColumn.Add(GraphRow());
+
+        leftSplitView.Add(charColumn);
+        leftSplitView.Add(GraphColumn);
+
+        rightSplitView.Add(sceneColumn);
+        rightSplitView.Add(leftSplitView);
+
+        rootVisualElement.Add(rightSplitView);
+    }
+
+    private VisualElement AddButton(string icon)
+    {
+        var toolbarButton = new EditorToolbarButton(() => AddScene())
+        {
+            iconImage = EditorGUIUtility.IconContent(icon).image as Texture2D,
+            style =
+            {
+                borderLeftColor = Color.clear,
+                borderRightColor = Color.clear,
+                backgroundColor = Color.clear,
+            }
+        };
+        return toolbarButton;
+    }
+
+
+    //money = add moneyamount
+    private VisualElement HeaderMarginSet(VisualElement element)
+    {
+        var newElement = element;
+
+        newElement.style.unityFontStyleAndWeight = FontStyle.Bold;
+        newElement.style.flexDirection = FlexDirection.Row;
+
+        newElement.style.height = 20;
+        // newElement.style.marginBottom = 1;
+        // newElement.style.marginTop = 1;
+
+        newElement.style.borderBottomWidth = 1;
+        newElement.style.borderBottomColor = Color.black;
+
+        return newElement;
     }
 }
