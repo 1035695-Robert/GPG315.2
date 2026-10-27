@@ -6,15 +6,14 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
-using Cursor = UnityEngine.Cursor;
-using PopupWindow = UnityEditor.PopupWindow;
+
 
 public partial class DialogueWindow
 {
     private VisualElement SceneRow()
     {
-        var sceneRow = HeaderMarginSet(new VisualElement());
-
+        var sceneRow =new VisualElement();
+        sceneRow.AddToClassList("column-header");
 
         sceneRow.Add(new Label
         {
@@ -25,24 +24,42 @@ public partial class DialogueWindow
                 unityTextAlign = TextAnchor.MiddleLeft
             }
         });
-        sceneRow.Add(AddButton("d_Toolbar Plus"));
+        var toolbarButton = new EditorToolbarButton(() => AddScene())
+        {
+            iconImage = EditorGUIUtility.IconContent("d_Toolbar Plus").image as Texture2D,
+        };
+        toolbarButton.AddToClassList("header-buttons");
+        sceneRow.Add(toolbarButton);
         return sceneRow;
     }
 
     private void AddScene()
     {
         Debug.Log("Add Scene");
-
+        var textLabel = new Label
+        {
+            style =
+            {
+                width = Length.Percent(100),
+                height = 25,
+            },
+        };
+        textLabel.RegisterCallback<ClickEvent>(evt =>
+        {
+            OnLabelSelect(textLabel);
+        });
         TextField selectableLabel = new TextField
         {
             value = "New Scene",
-            isReadOnly = false,
+            isReadOnly = true,
+            tripleClickSelectsLine = true,
             style =
             {
+                flexGrow = 1,
                 whiteSpace = WhiteSpace.Normal
             }
         };
-
+        textLabel.Add(selectableLabel);
 
         VisualElement textInput = selectableLabel.Q("unity-text-input");
         if (textInput != null)
@@ -63,6 +80,24 @@ public partial class DialogueWindow
         }
        
 
-        sceneColumn.Add(selectableLabel);
+        sceneColumn.Add(textLabel);
+    }
+
+    private Label currentSelection;
+
+    private void OnLabelSelect(Label textLabel) 
+    {
+        if (currentSelection != null)
+        {
+            currentSelection.RemoveFromClassList("selected-label");
+            
+        }
+        addCharacterButton.SetEnabled(currentSelection != null);
+        
+        textLabel.AddToClassList("selected-label");
+        currentSelection = textLabel;
+       
+        Debug.Log("display this scene");
+        //have one selected
     }
 }

@@ -15,33 +15,47 @@ public partial class DialogueWindow : EditorWindow
     VisualElement sceneColumn;
     VisualElement GraphColumn;
     VisualElement charColumn;
-
+    private Toolbar tools;
     public List<string> LanguagesList = new List<string> { "English", "German" };
 
     //private MultiColumnListView _multiColumnListView = new MultiColumnListView();
-    private TwoPaneSplitView leftSplitView;
+    private TwoPaneSplitView rightSplitView;
     private VisualElement scene;
     private List<string> scenelist;
-    private TwoPaneSplitView rightSplitView;
-
+    private TwoPaneSplitView leftSplitView;
+    
+    DSGraphView  graphView;
+    
+   private List<MasterDialogueListData> scenelistData = new List<MasterDialogueListData>();
     [MenuItem("Window/Dialogue")]
     public static void ShowWindow()
     {
         var window = GetWindow<DialogueWindow>();
         window.titleContent = new GUIContent("Dialogue");
     }
-
+    
+    
     private void OnEnable()
     {
-        leftSplitView = new TwoPaneSplitView(0, 200, TwoPaneSplitViewOrientation.Horizontal);
+        tools = new Toolbar();
+        
         rightSplitView = new TwoPaneSplitView(0, 200, TwoPaneSplitViewOrientation.Horizontal);
-        scene = new VisualElement();
+        leftSplitView = new TwoPaneSplitView
+        {
+            fixedPaneIndex = 0,
+            fixedPaneInitialDimension = 100,
+            orientation = TwoPaneSplitViewOrientation.Horizontal
+        };
     }
 
     public void CreateGUI()
     {
+        StyleSheet sheet = (StyleSheet)EditorGUIUtility.Load("DialogueUIVisualElements.uss");
+        rootVisualElement.styleSheets.Add(sheet);
+        
         CreateToolBar();
         CreateColumns();
+        
     }
 
     private void CreateToolBar()
@@ -60,49 +74,23 @@ public partial class DialogueWindow : EditorWindow
 
         sceneColumn.Add(SceneRow());
         charColumn.Add(CharacterRow());
-
-        GraphColumn.Add(GraphRow());
-
-        leftSplitView.Add(charColumn);
-        leftSplitView.Add(GraphColumn);
-
-        rightSplitView.Add(sceneColumn);
-        rightSplitView.Add(leftSplitView);
-
-        rootVisualElement.Add(rightSplitView);
+        
+        AddGraph();
+        
+        rightSplitView.Add(charColumn);
+        rightSplitView.Add(GraphColumn);
+        
+        leftSplitView.Add(sceneColumn);
+        leftSplitView.Add(rightSplitView);
+        
+        rootVisualElement.Add(leftSplitView);
     }
 
-    private VisualElement AddButton(string icon)
-    {
-        var toolbarButton = new EditorToolbarButton(() => AddScene())
-        {
-            iconImage = EditorGUIUtility.IconContent(icon).image as Texture2D,
-            style =
-            {
-                borderLeftColor = Color.clear,
-                borderRightColor = Color.clear,
-                backgroundColor = Color.clear,
-            }
-        };
-        return toolbarButton;
-    }
-
-
-    //money = add moneyamount
+    
+    
     private VisualElement HeaderMarginSet(VisualElement element)
     {
-        var newElement = element;
-
-        newElement.style.unityFontStyleAndWeight = FontStyle.Bold;
-        newElement.style.flexDirection = FlexDirection.Row;
-
-        newElement.style.height = 20;
-        // newElement.style.marginBottom = 1;
-        // newElement.style.marginTop = 1;
-
-        newElement.style.borderBottomWidth = 1;
-        newElement.style.borderBottomColor = Color.black;
-
-        return newElement;
+       
+        return element;
     }
 }

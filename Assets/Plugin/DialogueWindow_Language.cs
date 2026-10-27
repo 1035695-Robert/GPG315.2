@@ -7,7 +7,6 @@ public partial class DialogueWindow
 {
     private void LanguageDropDown()
     {
-        var tools = new Toolbar();
         var languageButton = new ToolbarButton
         {
             text = "Language",
@@ -17,6 +16,5 @@ public partial class DialogueWindow
 
         tools.Add(languageButton);
         rootVisualElement.Add(tools);
-        Debug.Log("Language Dropdown");
     }
 }
