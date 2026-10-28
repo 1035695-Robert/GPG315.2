@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DialogueSystem.Elements;
 using UnityEditor;
 using UnityEditor.Toolbars;
@@ -13,7 +14,11 @@ using PopupWindow = UnityEditor.PopupWindow;
 public partial class DialogueWindow
 {
     EditorToolbarButton addCharacterButton;
+    
+    
+    private TextField textName;
 
+   // private List<CharacterData> charRow = scenelistData.d
     private VisualElement CharacterRow()
     {
         var charRow = new VisualElement();
@@ -38,7 +43,7 @@ public partial class DialogueWindow
         charRow.Add(addCharacterButton);
         return charRow;
     }
-    private Color colour;
+    private ColorField colourField;
     private void AddCharacter()
     {
         
@@ -62,27 +67,18 @@ public partial class DialogueWindow
                 borderBottomRightRadius = 5,
             }
         };
-        
+      
    
-       newCharacter.Add(new TextField
-        { 
-            value = "Name",
-        });
+        List<CharacterData> allCharacters = SceneList.SelectMany(d => d.DialogueList.ToList());    
         
-        // Foldout imageFoldout = new Foldout
-        // {
-        //     text = "Character Image",
-        //     style =
-        //     {
-        //         flexGrow = 1
-        //     }
-        // };
-        // imageFoldout.Add(new ObjectField
-        // {
-        //     objectType = typeof(Texture2D),
-        // });
-        //newCharacter.Add(imageFoldout);
-        newCharacter.Add(new ColorField());
+        textName = new TextField { 
+            value = "Name",
+        };
+       newCharacter.Add(textName); 
+       colourField = new ColorField();
+      
+        newCharacter.Add(colourField);
+       
         newCharacter.Add(new Button(ActivateNode)
         {
             text = "Add Character",
@@ -99,15 +95,9 @@ public partial class DialogueWindow
 
     private void ActivateNode()
     {
-        if (graphView == null) return;
-
-        DialogueNode newNode = new DialogueNode();
-        newNode.name = "Dynamic Node";
-
-        Vector2 spawnPos = graphView.contentViewContainer.WorldToLocal(Vector2.zero);
-        newNode.SetPosition(new Rect(spawnPos, new Vector2(200, 150)));
-
-
-        graphView.AddElement(newNode);
+        Vector2 position = new Vector2(200, 200);
+        
+        DialogueNode node = graphView.CreateNode(position, textName.text, colourField.value);
+       graphView.AddElement(node);
     }
 }

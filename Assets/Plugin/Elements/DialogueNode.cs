@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,15 +12,20 @@ namespace DialogueSystem.Elements
 [Serializable]
     public class DialogueNode : Node
     {
-        public string DialogueName;
+        private string CharacterName;
         public List<string> choices;
         public string text;
-
+        public Texture2D profileIcon;
         public DialogueType dialogueType;
+        public Color Colour;
+StyleSheet styleSheet;
+        public Image imageProfile;
 
-        public void Initialize(Vector2 position)
+        public void Initialize(Vector2 position, string name, Color colour)
         {
-            DialogueName = "New Dialogue";
+            CharacterName =  name;
+            Colour = colour;
+
             choices = new List<string>();
             text = "add Text.";
             
@@ -34,23 +40,70 @@ namespace DialogueSystem.Elements
             TextFieldContainer();
         }
 
-
         private void TitleContainer()
         {
-            TextField dialogueNameTextField = new TextField
+            VisualElement container = new VisualElement
             {
-                value = DialogueName
+                style =
+                {
+                    flexDirection = FlexDirection.Row,
+                    height = 70,
+                    width = 300
+                }
             };
-            // Image image = new Image()
-
-            titleContainer.Insert(0, dialogueNameTextField);
+           titleContainer.style.height = 70;
+           titleContainer.style.width = 300;
+            titleContainer.style.backgroundColor = Colour;
+            
+            // profileIcon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/test.png");
+            // if (profileIcon == null) Debug.LogWarning("couldn't find image profile");
+            
+            Label imageSlot = new Label
+            {
+                style =
+                { 
+                    marginTop = 10,
+                    marginBottom = 10,
+                    height = 50,
+                    width = 50,
+                    backgroundColor = Color.black
+                }
+            };
+            container.Add(imageSlot);
+            VisualElement textContainer = new VisualElement
+            {
+                style = {flexGrow = 1}
+            };
+            TextField NameTextField = new TextField
+            {
+                value = CharacterName,
+                isReadOnly =  true,
+                style =
+                {
+                    marginTop = 10,
+                    height = 15,
+                }
+            };
+            textContainer.Add(NameTextField);
+            TextField dialogueField = new TextField
+            {
+                value = CharacterName,
+                isReadOnly = true,
+                
+                style = { height = 30}
+            };
+            textContainer.Add(dialogueField);
+            
+            container.Add(textContainer);
+            
+            titleContainer.Insert(1, container);
         }
 
         private void InputContainer()
         {
             Port inputPort =
                 InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(bool));
-            inputPort.portName = "Dialogue Connection";
+            inputPort.portName = "Input";
             inputContainer.Add(inputPort);
         }
 
@@ -58,7 +111,7 @@ namespace DialogueSystem.Elements
         {
             Port outputPort =
                 InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, typeof(bool));
-            outputPort.portName = "Dialogue Connection";
+            outputPort.portName = "Output";
 
             outputContainer.Add(outputPort);
         }

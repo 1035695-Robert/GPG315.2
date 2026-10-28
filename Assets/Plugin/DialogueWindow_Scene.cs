@@ -10,6 +10,7 @@ using UnityEngine.UIElements;
 
 public partial class DialogueWindow
 {
+    TextField selectableLabel;
     private VisualElement SceneRow()
     {
         var sceneRow =new VisualElement();
@@ -44,11 +45,8 @@ public partial class DialogueWindow
                 height = 25,
             },
         };
-        textLabel.RegisterCallback<ClickEvent>(evt =>
-        {
-            OnLabelSelect(textLabel);
-        });
-        TextField selectableLabel = new TextField
+       
+         selectableLabel = new TextField
         {
             value = "New Scene",
             isReadOnly = true,
@@ -79,21 +77,24 @@ public partial class DialogueWindow
             textInput.style.cursor = StyleKeyword.Initial;
         }
        
-
+        textLabel.RegisterCallback<ClickEvent>(evt =>
+        {
+            OnLabelSelect(textLabel, selectableLabel.value );
+        });
         sceneColumn.Add(textLabel);
     }
 
     private Label currentSelection;
 
-    private void OnLabelSelect(Label textLabel) 
+    private void OnLabelSelect(Label textLabel, string value) 
     {
         if (currentSelection != null)
         {
             currentSelection.RemoveFromClassList("selected-label");
-            
         }
         addCharacterButton.SetEnabled(currentSelection != null);
-        
+        MasterDialogueListData  dialogueListData = SceneList.Find(select => select.DialogueName ==  value);
+        //SceneList.Add(textLabel.;)
         textLabel.AddToClassList("selected-label");
         currentSelection = textLabel;
        

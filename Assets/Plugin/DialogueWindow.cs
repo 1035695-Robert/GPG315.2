@@ -21,12 +21,13 @@ public partial class DialogueWindow : EditorWindow
     //private MultiColumnListView _multiColumnListView = new MultiColumnListView();
     private TwoPaneSplitView rightSplitView;
     private VisualElement scene;
-    private List<string> scenelist;
+    
     private TwoPaneSplitView leftSplitView;
     
     DSGraphView  graphView;
     
-   private List<MasterDialogueListData> scenelistData = new List<MasterDialogueListData>();
+   public List<MasterDialogueListData> SceneList = new  List<MasterDialogueListData>();
+   
     [MenuItem("Window/Dialogue")]
     public static void ShowWindow()
     {
