@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class MasterDialogueListData
+public class MasterDialogueListData : ScriptableObject
 {
-        public string DialogueName;
-        public List<CharacterData>  DialogueList = new List<CharacterData>();
+        public string SceneName;
+        public List<CharacterData>  CharacterList = new List<CharacterData>();
 }
 [Serializable]
 public class CharacterData
