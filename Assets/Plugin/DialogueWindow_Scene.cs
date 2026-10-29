@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Rendering;
 using UnityEditor.Toolbars;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 
 public partial class DialogueWindow
 {
-    TextField selectableLabel;
+    TextField selectableLabel; 
 
     private VisualElement SceneHeader()
     {
@@ -40,11 +42,12 @@ public partial class DialogueWindow
        sceneListView = new ListView
        {
             reorderable = true,
+            
             itemsSource = SceneList,
             fixedItemHeight = 24,
             makeItem = () =>
             {
-                var label = new Label
+                var label = new Label 
                 {
                     style = { unityTextAlign = TextAnchor.MiddleLeft }
                 };
@@ -59,10 +62,11 @@ public partial class DialogueWindow
                         ? $" scene{index} (No Name)"
                         : SceneList[index].SceneName;
                 }
-
-                sceneListView.selectionChanged += OnSelection;
             }
+
        };
+       
+       sceneListView.selectionChanged += OnSelection;
 
        return sceneListView;
     }
@@ -73,9 +77,10 @@ public partial class DialogueWindow
         {
             var selectedScene =  scene as MasterDialogueListData;
             if (selectedScene != null)
-            {
+            {Debug.Log("selected");
                 selectedSceneData = selectedScene;
-                RefeshCharacter();
+               
+                RefreshCharacter();
             }
         }
             
@@ -83,53 +88,59 @@ public partial class DialogueWindow
 
     private void AddScene()
     {
-        SceneList.Add(new MasterDialogueListData{SceneName = $"New Scene {SceneList.Count}"});
+        SceneList.Add(CreateInstance<MasterDialogueListData>());
         sceneListView.Rebuild();
+        
+        charColumn.Add(CreateCharacterList());
+        
+        int index = SceneList.Count - 1;
+        sceneListView.SetSelection(new int[] {index});
+        
 
         #region oldAddScene
 
-        
 
-     
-    //     Debug.Log("Add Scene");
-    //     var textLabel = new Label
-    //     {
-    //         style =
-    //         {
-    //             width = Length.Percent(100),
-    //             height = 25,
-    //         },
-    //     };
-    //    
-    //      selectableLabel = new TextField
-    //     {
-    //         value = "New Scene",
-    //         isReadOnly = true,
-    //         tripleClickSelectsLine = true,
-    //         style =
-    //         {
-    //             flexGrow = 1,
-    //             whiteSpace = WhiteSpace.Normal
-    //         }
-    //     };
-    //     textLabel.Add(selectableLabel);
-    //
-    //     VisualElement textInput = selectableLabel.Q("unity-text-input");
-    //     if (textInput != null)
-    //     {
-    //         textInput.style.backgroundColor = Color.clear;
-    //
-    //         textInput.style.borderTopWidth = 0;
-    //         textInput.style.borderBottomWidth = 0;
-    //         textInput.style.borderLeftWidth = 0;
-    //         textInput.style.borderRightWidth = 0;
-    //
-    //         textInput.style.paddingLeft = 0;
-    //         textInput.style.paddingRight = 0;
-    //         textInput.style.paddingTop = 0;
-    //         textInput.style.paddingBottom = 0;
-    //
-    //         textInput.style.cursor = StyleKeyword.Initial;
+
+
+        //     Debug.Log("Add Scene");
+        //     var textLabel = new Label
+        //     {
+        //         style =
+        //         {
+        //             width = Length.Percent(100),
+        //             height = 25,
+        //         },
+        //     };
+        //    
+        //      selectableLabel = new TextField
+        //     {
+        //         value = "New Scene",
+        //         isReadOnly = true,
+        //         tripleClickSelectsLine = true,
+        //         style =
+        //         {
+        //             flexGrow = 1,
+        //             whiteSpace = WhiteSpace.Normal
+        //         }
+        //     };
+        //     textLabel.Add(selectableLabel);
+        //
+        //     VisualElement textInput = selectableLabel.Q("unity-text-input");
+        //     if (textInput != null)
+        //     {
+        //         textInput.style.backgroundColor = Color.clear;
+        //
+        //         textInput.style.borderTopWidth = 0;
+        //         textInput.style.borderBottomWidth = 0;
+        //         textInput.style.borderLeftWidth = 0;
+        //         textInput.style.borderRightWidth = 0;
+        //
+        //         textInput.style.paddingLeft = 0;
+        //         textInput.style.paddingRight = 0;
+        //         textInput.style.paddingTop = 0;
+        //         textInput.style.paddingBottom = 0;
+        //
+        //         textInput.style.cursor = StyleKeyword.Initial;
         // }
         //
         // textLabel.RegisterCallback<ClickEvent>(evt =>
@@ -137,6 +148,7 @@ public partial class DialogueWindow
         //     OnLabelSelect(textLabel, selectableLabel.value );
         // });
         // sceneColumn.Add(textLabel);
+
         #endregion
     }
     #region CalledFromOldAddScene
