@@ -3,23 +3,12 @@ using UnityEngine.UIElements;
 
 public partial class DialogueWindow
 {
-    private VisualElement GraphRow()
+    
+    private void AddGraph()
     {
-        var graphRow = HeaderMarginSet(new VisualElement());
-
-        graphRow.Add(new Label("Stuff")
-        {
-            text = "Add Scene",
-            style =
-            {
-                marginLeft = 4,
-                flexGrow = 1,
-               unityTextAlign =  TextAnchor.MiddleLeft
-            }
-        });
-
-        return graphRow;
+        graphView = new DSGraphView();
+        graphView.name = "graphView";
+        GraphColumn.Add(graphView);
+        graphView.StretchToParentSize();
     }
-    
-    
 }

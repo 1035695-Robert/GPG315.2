@@ -1,0 +1,22 @@
+.column-header
+{
+    -unity-font-style: bold;
+    flex-direction: row;
+    -unity-text-align: middle-left;
+    
+    height: 20px;
+    border-bottom-width: 1px;
+    border-bottom-color: black;
+}
+
+.selected-label
+{ 
+    background-color: grey;
+}
+
+.header-buttons
+{
+    border-left-color: transparent;
+    border-right-color: transparent;
+    background-color: transparent;
+}
