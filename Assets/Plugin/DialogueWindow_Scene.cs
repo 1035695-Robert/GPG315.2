@@ -62,9 +62,9 @@ public partial class DialogueWindow
                 var label = element as Label;
                 if (index < SceneList.Count && SceneList[index] != null)
                 {
-                    label.text = string.IsNullOrEmpty(SceneList[index].SceneName)
-                        ? $" scene{index} (No Name)"
-                        : SceneList[index].SceneName;
+                    // label.text = string.IsNullOrEmpty(SceneList[index].sceneList[index].SceneName)
+                    //     ? $" scene{index} (No Name)"
+                    //     : SceneList[index].sceneList;
                 }
             }
 
@@ -79,17 +79,14 @@ public partial class DialogueWindow
     {
         foreach (var scene in scenes)
         {
-            var selectedScene =  scene as MasterDialogueListData;
+            selectedScene =  scene as SceneData;
             if (selectedScene != null)
             {Debug.Log("selected");
-                selectedSceneData = selectedScene;
                
                 RefreshCharacter();
             }
         }
-            
     }
-
     private void AddScene()
     {
         SceneList.Add(CreateInstance<MasterDialogueListData>());

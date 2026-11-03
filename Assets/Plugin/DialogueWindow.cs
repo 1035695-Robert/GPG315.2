@@ -14,9 +14,11 @@ public partial class DialogueWindow : EditorWindow
     VisualElement sceneColumn;
     VisualElement GraphColumn;
     VisualElement charColumn;
+    VisualElement popupOverlay;
     private Toolbar tools;
+    Label languageCreatePopup;
     public List<string> LanguagesList = new List<string> { "English", "German" };
-
+TextField newLangaugeName;
     private TwoPaneSplitView rightSplitView;
     private VisualElement scene;
 
@@ -25,22 +27,24 @@ public partial class DialogueWindow : EditorWindow
     DSGraphView graphView;
 
     public List<MasterDialogueListData> SceneList = new List<MasterDialogueListData>();
-    private MasterDialogueListData selectedSceneData;
+    private MasterDialogueListData masterDialogueListData;
+    private SceneData selectedScene;
     public ListView sceneListView;
     public ListView charListView;
 
+    
+    
     [MenuItem("Window/Dialogue")]
     public static void ShowWindow()
     {
         var window = GetWindow<DialogueWindow>();
         window.titleContent = new GUIContent("Dialogue");
     }
-
-
-    private void OnEnable()
+    
+    public void CreateGUI()
     {
         tools = new Toolbar();
-
+        
         rightSplitView = new TwoPaneSplitView(0, 200, TwoPaneSplitViewOrientation.Horizontal);
         leftSplitView = new TwoPaneSplitView
         {
@@ -48,30 +52,42 @@ public partial class DialogueWindow : EditorWindow
             fixedPaneInitialDimension = 100,
             orientation = TwoPaneSplitViewOrientation.Horizontal
         };
-    }
-
-    public void CreateGUI()
-    {
+        
         StyleSheet sheet = (StyleSheet)EditorGUIUtility.Load("DialogueUIVisualElements.uss");
         rootVisualElement.styleSheets.Add(sheet);
-
-       
-        // sceneListView.selectionChanged += OnSceneSelected;
+        
         CreateToolBar();
         CreateColumns();
     }
 
-    // private void OnSceneSelected(IEnumerable<object> obj)
-    // {
-    //     
-    // }
 
 
-    private void CreateToolBar()
+
+        private void CreateToolBar()
         {
-            var toolbar = new Toolbar();
-            LanguageDropDown();
+            popupOverlay = new VisualElement();
+            popupOverlay.AddToClassList("popup-overlay"); 
+            popupOverlay.style.display = DisplayStyle.None;
+            
+            VisualElement popupwindow = new VisualElement();
+            popupwindow.AddToClassList("popup-window");
+            
+            
+            Label title =  new Label { text = "title", };
+             newLangaugeName = new TextField {  label = "name", style = { flexDirection = FlexDirection.Column}};
+            Button createButton = new Button(() => CreateNewLanguage()) { text = "create" };
+            
+            popupwindow.Add(title);
+            popupwindow.Add(newLangaugeName);
+            popupwindow.Add(createButton);
+            
+            popupOverlay.Add(popupwindow);
+            
+            
+         LanguageDropDown(); 
         }
+
+       
 
 
         private void CreateColumns()
@@ -95,6 +111,7 @@ public partial class DialogueWindow : EditorWindow
             leftSplitView.Add(rightSplitView);
 
             rootVisualElement.Add(leftSplitView);
+            rootVisualElement.Add(popupOverlay);
         }
 
 

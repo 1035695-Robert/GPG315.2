@@ -53,7 +53,7 @@ public partial class DialogueWindow
         charListView = new ListView
         {
             reorderable = true,
-            itemsSource = selectedSceneData.CharacterList,
+            itemsSource = selectedScene.CharacterList,
             virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
             makeItem = () =>
             {
@@ -95,9 +95,9 @@ public partial class DialogueWindow
                 var label = element.Q <TextField>();
                 var colour = element.Q<ColorField>();
                 var button =  element.Q<Button>();
-                if (index < selectedSceneData.CharacterList.Count && selectedSceneData.CharacterList[index] != null)
+                if (index < selectedScene.CharacterList.Count && selectedScene.CharacterList[index] != null)
                 {
-                    var character = selectedSceneData.CharacterList[index];
+                    var character = selectedScene.CharacterList[index];
 
                     if (label.userData is EventCallback<ChangeEvent<string>> oldName)
                     {
@@ -139,17 +139,18 @@ public partial class DialogueWindow
 
     private void AddCharacter()
     {
-        if (selectedSceneData == null) return;
-
-        selectedSceneData.CharacterList.Add(new CharacterData());
+       
+        if (selectedScene == null) return;
+        
+        selectedScene.CharacterList.Add(new CharacterData());
 
         RefreshCharacter();
 
-        int index = selectedSceneData.CharacterList.Count - 1; 
+        int index = selectedScene.CharacterList.Count - 1; 
         charListView.selectedIndex  = index;
         charListView.ScrollToItem(index);
-        
 
+        #region OldAddCharacter
         //  
         //  Label newCharacter = new Label
         //  {
@@ -194,14 +195,15 @@ public partial class DialogueWindow
         //  });
         //
         //  charColumn.Add(newCharacter);
+        #endregion
     }
 
 
     private void ActivateNode(int index)
     {
         Vector2 position = new Vector2(200, 200);
-        string characterName = selectedSceneData.CharacterList[index].Name;
-        Color colour = selectedSceneData.CharacterList[index].Colour; 
+        string characterName = selectedScene.CharacterList[index].Name;
+        Color colour = selectedScene.CharacterList[index].Colour; 
         Debug.Log("characterID" + index + " name " + characterName + " color " + colour);
         
         DialogueNode node = graphView.CreateNode(position, characterName, colour);
@@ -211,9 +213,9 @@ public partial class DialogueWindow
 
     private void RefreshCharacter()
     {
-        if (selectedSceneData == null) return;
+        if (selectedScene == null) return;
         charListView.Clear();
-        charListView.itemsSource = selectedSceneData.CharacterList;
+        charListView.itemsSource = selectedScene.CharacterList;
         charListView.Rebuild();
     }
 }
