@@ -49,7 +49,11 @@ public partial class DialogueWindow
             {
                 var label = new Label 
                 {
-                    style = { unityTextAlign = TextAnchor.MiddleLeft }
+                    style =
+                    {
+                        marginLeft = 5,
+                        unityTextAlign = TextAnchor.MiddleLeft
+                    }
                 };
                 return label;
             },

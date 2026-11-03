@@ -46,17 +46,8 @@ public class DSGraphView : GraphView
         this.AddManipulator(new RectangleSelector());
         
         
-       // this.AddManipulator(CreateNodeContextualMenu());
     }
-
-    // public IManipulator CreateNodeContextualMenu()
-    // {
-    //     ContextualMenuManipulator contextualMenuManipulator = new ContextualMenuManipulator(
-    //         menuEvent => menuEvent.menu.AppendAction("add Node", actionEvent=> AddElement(CreateNode(actionEvent.eventInfo.localMousePosition)))
-    //         );
-    //     return contextualMenuManipulator;
-    // }
-
+    
     private void AddStyle()
     {
         StyleSheet sheet = (StyleSheet)EditorGUIUtility.Load("DSGraphViewStyle.uss");
