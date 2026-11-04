@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using DialogueSystem.Elements;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -139,7 +137,6 @@ public partial class DialogueWindow
 
     private void AddCharacter()
     {
-       
         if (selectedScene == null) return;
         
         selectedScene.CharacterList.Add(new CharacterData());
@@ -213,7 +210,7 @@ public partial class DialogueWindow
 
     private void RefreshCharacter()
     {
-        if (selectedScene == null) return;
+        if (selectedScene == null || charListView == null) return;
         charListView.Clear();
         charListView.itemsSource = selectedScene.CharacterList;
         charListView.Rebuild();

@@ -43,7 +43,7 @@ public partial class DialogueWindow
        {
             reorderable = true,
             
-            itemsSource = SceneList,
+            itemsSource = selectedSceneList,
             fixedItemHeight = 24,
             makeItem = () =>
             {
@@ -60,11 +60,9 @@ public partial class DialogueWindow
             bindItem = (element, index) =>
             {
                 var label = element as Label;
-                if (index < SceneList.Count && SceneList[index] != null)
+                if (index < selectedSceneList.Count && selectedSceneList[index] != null)
                 {
-                    // label.text = string.IsNullOrEmpty(SceneList[index].sceneList[index].SceneName)
-                    //     ? $" scene{index} (No Name)"
-                    //     : SceneList[index].sceneList;
+                    label.text = "scene " +  (index + 1);
                 }
             }
 
@@ -82,20 +80,20 @@ public partial class DialogueWindow
             selectedScene =  scene as SceneData;
             if (selectedScene != null)
             {Debug.Log("selected");
-               
+                
                 RefreshCharacter();
             }
         }
     }
     private void AddScene()
     {
-        SceneList.Add(CreateInstance<MasterDialogueListData>());
+        SceneData newScene = new SceneData();
+        selectedSceneList.Add(newScene);
         sceneListView.Rebuild();
         
-        charColumn.Add(CreateCharacterList());
-        
-        int index = SceneList.Count - 1;
+        int index = selectedSceneList.Count - 1;
         sceneListView.SetSelection(new int[] {index});
+        charColumn.Add(CreateCharacterList());
         
 
         #region oldAddScene
