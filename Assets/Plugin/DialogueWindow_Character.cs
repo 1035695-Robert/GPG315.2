@@ -51,7 +51,6 @@ public partial class DialogueWindow
         charListView = new ListView
         {
             reorderable = true,
-            itemsSource = selectedScene.CharacterList,
             virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
             makeItem = () =>
             {
@@ -193,18 +192,6 @@ public partial class DialogueWindow
         //
         //  charColumn.Add(newCharacter);
         #endregion
-    }
-
-
-    private void ActivateNode(int index)
-    {
-        Vector2 position = new Vector2(200, 200);
-        string characterName = selectedScene.CharacterList[index].Name;
-        Color colour = selectedScene.CharacterList[index].Colour; 
-        Debug.Log("characterID" + index + " name " + characterName + " color " + colour);
-        
-        DialogueNode node = graphView.CreateNode(position, characterName, colour);
-        graphView.AddElement(node);
     }
 
 

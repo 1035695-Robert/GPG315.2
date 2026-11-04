@@ -65,7 +65,6 @@ public partial class DialogueWindow
                     label.text = "scene " +  (index + 1);
                 }
             }
-
        };
        
        sceneListView.selectionChanged += OnSelection;
@@ -87,20 +86,15 @@ public partial class DialogueWindow
     }
     private void AddScene()
     {
-        SceneData newScene = new SceneData();
-        selectedSceneList.Add(newScene);
+        selectedSceneList.Add(CreateInstance<SceneData>());
         sceneListView.Rebuild();
         
         int index = selectedSceneList.Count - 1;
         sceneListView.SetSelection(new int[] {index});
-        charColumn.Add(CreateCharacterList());
+       
         
 
         #region oldAddScene
-
-
-
-
         //     Debug.Log("Add Scene");
         //     var textLabel = new Label
         //     {
@@ -147,7 +141,6 @@ public partial class DialogueWindow
         //     OnLabelSelect(textLabel, selectableLabel.value );
         // });
         // sceneColumn.Add(textLabel);
-
         #endregion
     }
     #region CalledFromOldAddScene

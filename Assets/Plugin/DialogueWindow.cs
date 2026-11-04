@@ -28,7 +28,7 @@ public partial class DialogueWindow : EditorWindow
     public List<MasterDialogueListData> SceneList = new List<MasterDialogueListData>();
     private MasterDialogueListData masterDialogueListData;
     private SceneData selectedScene;
-    private List<SceneData> selectedSceneList;
+    private List<SceneData> selectedSceneList = new List<SceneData>();
     public ListView sceneListView;
     public ListView charListView;
 
@@ -55,7 +55,9 @@ public partial class DialogueWindow : EditorWindow
         rootVisualElement.styleSheets.Add(sheet);
 
         CreateToolBar();
+        
         CreateColumns();
+        
     }
 
     private void CreateColumns()
@@ -68,7 +70,8 @@ public partial class DialogueWindow : EditorWindow
         sceneColumn.Add(CreateSceneList());
 
         charColumn.Add(CharacterHeader());
-
+        charColumn.Add(CreateCharacterList());
+        
         AddGraph();
 
         rightSplitView.Add(charColumn);

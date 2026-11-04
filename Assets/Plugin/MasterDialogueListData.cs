@@ -10,7 +10,7 @@ public class MasterDialogueListData
 }
 
 [Serializable]
-public class SceneData
+public class SceneData : ScriptableObject
 {
         public string SceneName;
         public List<CharacterData>  CharacterList = new List<CharacterData>();
@@ -30,6 +30,7 @@ public class LanguageData
 [Serializable]
 public class DialogueData
 {
+        public string speakerName;
         public string dialogueText;
 }
 
