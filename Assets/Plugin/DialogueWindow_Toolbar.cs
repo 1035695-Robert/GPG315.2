@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Toolbars;
 using UnityEditor.UIElements;
@@ -52,6 +54,22 @@ public partial class DialogueWindow
 
     private void SaveDialogue()
     {
-        Debug.Log("Save Dialogue");
+        if (!AssetDatabase.IsValidFolder("Assets/Dialogue"))
+        {
+            AssetDatabase.CreateFolder("Assets", "Dialogue");
+        }
+
+        foreach (string language in masterDialogueListData.LanguagesFiles.Select(lang => lang.LanguageName))
+        {
+            Debug.Log("Saving language: " + language);
+            if (!AssetDatabase.IsValidFolder("Assets/Dialogue/" + language))
+                AssetDatabase.CreateFolder("Assets/Dialogue", language);
+        }
+
+
+        string dialogueData = JsonUtility.ToJson(masterDialogueListData,true);
+        string filePath = Path.Combine(Application.streamingAssetsPath,  "scene.json");
+        Debug.Log("file path: " + filePath);
+        File.WriteAllText(filePath, dialogueData);
     }
 }

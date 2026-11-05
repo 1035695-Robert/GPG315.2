@@ -1,24 +1,17 @@
-
-using DialogueSystem.Elements;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEditor.Toolbars;
 using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.Experimental.Audio;
-using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
-using PopupWindow = UnityEditor.PopupWindow;
 
 
 public partial class DialogueWindow
 {
-    EditorToolbarButton addCharacterButton;
+   private EditorToolbarButton addCharacterButton;
 
 
     private TextField textName;
-
-    // private List<CharacterData> charRow = scenelistData.d
+    
     private VisualElement CharacterHeader()
     {
         var charRow = new VisualElement();
@@ -92,6 +85,7 @@ public partial class DialogueWindow
                 var label = element.Q <TextField>();
                 var colour = element.Q<ColorField>();
                 var button =  element.Q<Button>();
+                int selectedIndex = sceneListView.selectedIndex;
                 if (index < selectedScene.CharacterList.Count && selectedScene.CharacterList[index] != null)
                 {
                     var character = selectedScene.CharacterList[index];

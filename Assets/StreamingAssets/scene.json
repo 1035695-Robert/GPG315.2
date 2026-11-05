@@ -1,0 +1,90 @@
+{
+    "LanguagesFiles": [],
+    "sceneList": [
+        {
+            "SceneName": "newScene",
+            "CharacterList": [],
+            "DialogueList": []
+        },
+        {
+            "SceneName": "scene 1",
+            "CharacterList": [],
+            "DialogueList": []
+        },
+        {
+            "SceneName": "scene 2",
+            "CharacterList": [
+                {
+                    "Name": "steve",
+                    "Colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                }
+            ],
+            "DialogueList": []
+        },
+        {
+            "SceneName": "scene 3",
+            "CharacterList": [
+                {
+                    "Name": "",
+                    "Colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                }
+            ],
+            "DialogueList": []
+        },
+        {
+            "SceneName": "scene 4",
+            "CharacterList": [
+                {
+                    "Name": "",
+                    "Colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                }
+            ],
+            "DialogueList": []
+        },
+        {
+            "SceneName": "scene 5",
+            "CharacterList": [
+                {
+                    "Name": "",
+                    "Colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                }
+            ],
+            "DialogueList": []
+        },
+        {
+            "SceneName": "scene 6",
+            "CharacterList": [
+                {
+                    "Name": "",
+                    "Colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                }
+            ],
+            "DialogueList": []
+        }
+    ]
+}

@@ -1,12 +1,8 @@
-using System;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.Toolbars;
 using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
-using PopupWindow = UnityEditor.PopupWindow;
 
 public partial class DialogueWindow : EditorWindow
 {
@@ -26,12 +22,12 @@ public partial class DialogueWindow : EditorWindow
     DSGraphView graphView;
 
     public List<MasterDialogueListData> SceneList = new List<MasterDialogueListData>();
-    private MasterDialogueListData masterDialogueListData;
+    private MasterDialogueListData masterDialogueListData = new MasterDialogueListData();
     private SceneData selectedScene;
-    private List<SceneData> selectedSceneList = new List<SceneData>();
     public ListView sceneListView;
     public ListView charListView;
 
+    private DialogueToJson dialogue;
 
     [MenuItem("Window/Dialogue")]
     public static void ShowWindow()
@@ -42,6 +38,7 @@ public partial class DialogueWindow : EditorWindow
 
     public void CreateGUI()
     {
+        
         tools = new Toolbar();
         rightSplitView = new TwoPaneSplitView(0, 200, TwoPaneSplitViewOrientation.Horizontal);
         leftSplitView = new TwoPaneSplitView

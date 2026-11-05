@@ -10,11 +10,12 @@ public class MasterDialogueListData
 }
 
 [Serializable]
-public class SceneData : ScriptableObject
+public class SceneData
 {
         public string SceneName;
-        public List<CharacterData>  CharacterList = new List<CharacterData>();
-        public List<DialogueData>  DialogueList = new List<DialogueData>();
+        public List<CharacterData> CharacterList;
+        public List<DialogueData> DialogueList;
+        
 }
 [Serializable]
 public class CharacterData

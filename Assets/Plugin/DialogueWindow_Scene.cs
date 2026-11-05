@@ -12,7 +12,8 @@ using UnityEngine.UIElements;
 
 public partial class DialogueWindow
 {
-    TextField selectableLabel; 
+    TextField selectableLabel;
+    private Label SceneLabel;
 
     private VisualElement SceneHeader()
     {
@@ -43,11 +44,11 @@ public partial class DialogueWindow
        {
             reorderable = true,
             
-            itemsSource = selectedSceneList,
+            itemsSource = masterDialogueListData.sceneList,
             fixedItemHeight = 24,
             makeItem = () =>
             {
-                var label = new Label 
+                SceneLabel = new Label 
                 {
                     style =
                     {
@@ -55,18 +56,18 @@ public partial class DialogueWindow
                         unityTextAlign = TextAnchor.MiddleLeft
                     }
                 };
-                return label;
+                return SceneLabel;
             },
             bindItem = (element, index) =>
             {
                 var label = element as Label;
-                if (index < selectedSceneList.Count && selectedSceneList[index] != null)
+                if (index < masterDialogueListData.sceneList.Count && masterDialogueListData.sceneList[index] != null)
                 {
                     label.text = "scene " +  (index + 1);
                 }
             }
        };
-       
+
        sceneListView.selectionChanged += OnSelection;
 
        return sceneListView;
@@ -86,10 +87,17 @@ public partial class DialogueWindow
     }
     private void AddScene()
     {
-        selectedSceneList.Add(CreateInstance<SceneData>());
-        sceneListView.Rebuild();
+
+        SceneData newScene = new SceneData()
+        {
+            SceneName = SceneLabel != null ? SceneLabel.text : "newScene",
+            CharacterList = new List<CharacterData>(),
+            DialogueList = new List<DialogueData>()
+        };
+        masterDialogueListData.sceneList.Add(newScene);
+    sceneListView.Rebuild();
         
-        int index = selectedSceneList.Count - 1;
+        int index = masterDialogueListData.sceneList.Count - 1;
         sceneListView.SetSelection(new int[] {index});
        
         
