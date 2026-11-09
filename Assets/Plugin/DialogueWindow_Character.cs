@@ -50,11 +50,18 @@ public partial class DialogueWindow
 
     private ListView CreateCharacterList()
     {
+        if (selectedSceneData == null)
+        {
+            var emptyListView = new ListView();
+            emptyListView.style.display = DisplayStyle.None;
+            return emptyListView;
+        }
         charListView = new ListView
         {
             reorderable = true,
             itemsSource = selectedSceneData.CharacterList,
             virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
+            
             makeItem = () =>
             {
                 var container = new VisualElement
@@ -63,7 +70,9 @@ public partial class DialogueWindow
                     {
                         height = 100,
                         flexDirection = FlexDirection.Column,
-                        backgroundColor = Color.black
+                        backgroundColor = Color.black,
+                        marginTop = 4,
+                        marginBottom = 4
                     }
                 };
                 
@@ -149,8 +158,6 @@ public partial class DialogueWindow
         charListView.selectedIndex  = index;
         charListView.ScrollToItem(index);
         
-
-        //  
         //  Label newCharacter = new Label
         //  {
         //      style =

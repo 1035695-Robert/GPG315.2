@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [Serializable]
 public class MasterDialogueListData : ScriptableObject
 {
@@ -19,6 +20,14 @@ public class CharacterData
 [Serializable]
 public class DialogueData
 {
+        public List<LanguageData> LanguageList;
         public string dialogueText;
 }
 
+
+
+[Serializable]
+public class LanguageData: ScriptableObject
+{
+        public string LanguageName;
+}

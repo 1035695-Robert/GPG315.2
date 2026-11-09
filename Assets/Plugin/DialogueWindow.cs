@@ -15,7 +15,9 @@ public partial class DialogueWindow : EditorWindow
     VisualElement GraphColumn;
     VisualElement charColumn;
     private Toolbar tools;
-    public List<string> LanguagesList = new List<string> { "English", "German" };
+    
+    public ListView sceneListView;
+    public ListView charListView;
 
     private TwoPaneSplitView rightSplitView;
     private VisualElement scene;
@@ -26,9 +28,8 @@ public partial class DialogueWindow : EditorWindow
 
     public List<MasterDialogueListData> SceneList = new List<MasterDialogueListData>();
     private MasterDialogueListData selectedSceneData;
-    public ListView sceneListView;
-    public ListView charListView;
-
+   
+ 
     [MenuItem("Window/Dialogue")]
     public static void ShowWindow()
     {
@@ -84,6 +85,7 @@ public partial class DialogueWindow : EditorWindow
             sceneColumn.Add(CreateSceneList());
             
             charColumn.Add(CharacterHeader());
+            charColumn.Add(CreateCharacterList());
 
             
             AddGraph();
