@@ -28,36 +28,22 @@ public partial class DialogueWindow : EditorWindow
 
     public List<MasterDialogueListData> SceneList = new List<MasterDialogueListData>();
     private MasterDialogueListData selectedSceneData;
+    
+    private List<LanguageData> languageList = new List<LanguageData>();
    
- 
-    [MenuItem("Window/Dialogue")]
-    public static void ShowWindow()
+    
+    public static void ShowWindow(DialogueAsset asset)
     {
         var window = GetWindow<DialogueWindow>();
         window.titleContent = new GUIContent("Dialogue");
     }
-
-
-    private void OnEnable()
-    {
-        tools = new Toolbar();
-
-        rightSplitView = new TwoPaneSplitView(0, 200, TwoPaneSplitViewOrientation.Horizontal);
-        leftSplitView = new TwoPaneSplitView
-        {
-            fixedPaneIndex = 0,
-            fixedPaneInitialDimension = 100,
-            orientation = TwoPaneSplitViewOrientation.Horizontal
-        };
-    }
-
+    
     public void CreateGUI()
     {
         StyleSheet sheet = (StyleSheet)EditorGUIUtility.Load("DialogueUIVisualElements.uss");
         rootVisualElement.styleSheets.Add(sheet);
 
        
-        // sceneListView.selectionChanged += OnSceneSelected;
         CreateToolBar();
         CreateColumns();
     }
@@ -69,8 +55,16 @@ public partial class DialogueWindow : EditorWindow
 
 
     private void CreateToolBar()
-        {
-            var toolbar = new Toolbar();
+        {   tools = new Toolbar();
+
+            rightSplitView = new TwoPaneSplitView(0, 200, TwoPaneSplitViewOrientation.Horizontal);
+            leftSplitView = new TwoPaneSplitView
+            {
+                fixedPaneIndex = 0,
+                fixedPaneInitialDimension = 100,
+                orientation = TwoPaneSplitViewOrientation.Horizontal
+            };
+            CreateNewLanguageMenuPopup();
             LanguageDropDown();
         }
 
@@ -97,6 +91,8 @@ public partial class DialogueWindow : EditorWindow
             leftSplitView.Add(rightSplitView);
 
             rootVisualElement.Add(leftSplitView);
+            
+            rootVisualElement.Add(_popupOverlay);
         }
 
 
