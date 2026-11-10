@@ -1,103 +1,99 @@
-using System;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.Toolbars;
 using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
-using PopupWindow = UnityEditor.PopupWindow;
 
 public partial class DialogueWindow : EditorWindow
 {
+    private VisualElement _sceneColumn;
+    private VisualElement _graphColumn;
+    private VisualElement _charColumn;
+    private Toolbar _tools;
 
-    VisualElement sceneColumn;
-    VisualElement GraphColumn;
-    VisualElement charColumn;
-    private Toolbar tools;
-    
-    public ListView sceneListView;
-    public ListView charListView;
+    private ListView _sceneListView;
+    private ListView _charListView;
 
-    private TwoPaneSplitView rightSplitView;
-    private VisualElement scene;
+    private TwoPaneSplitView _rightSplitView;
+    private VisualElement _scene;
 
-    private TwoPaneSplitView leftSplitView;
+    private TwoPaneSplitView _leftSplitView;
 
-    DSGraphView graphView;
+    private DSGraphView _graphView;
 
-    public List<MasterDialogueListData> SceneList = new List<MasterDialogueListData>();
-    private MasterDialogueListData selectedSceneData;
-    
-    private List<LanguageData> languageList = new List<LanguageData>();
-   
-    
+    public List<MasterDialogueListData> sceneList = new List<MasterDialogueListData>();
+    private MasterDialogueListData _selectedSceneData;
+
+    private List<LanguageData> _languageList = new List<LanguageData>();
+
+
     public static void ShowWindow(DialogueAsset asset)
     {
         var window = GetWindow<DialogueWindow>();
         window.titleContent = new GUIContent("Dialogue");
     }
-    
+
     public void CreateGUI()
     {
         StyleSheet sheet = (StyleSheet)EditorGUIUtility.Load("DialogueUIVisualElements.uss");
         rootVisualElement.styleSheets.Add(sheet);
-
-       
+        _leftSplitView = new TwoPaneSplitView
+        {
+            fixedPaneIndex = 0,
+            fixedPaneInitialDimension = 150,
+            orientation = TwoPaneSplitViewOrientation.Horizontal
+        };
+        _leftSplitView.style.flexGrow = 1;
+        _rightSplitView = new TwoPaneSplitView
+        {
+            fixedPaneIndex = 0,
+            fixedPaneInitialDimension = 200,
+            orientation = TwoPaneSplitViewOrientation.Horizontal
+        };
+        _rightSplitView.style.flexGrow = 1;
+        
         CreateToolBar();
         CreateColumns();
     }
 
-    // private void OnSceneSelected(IEnumerable<object> obj)
-    // {
-    //     
-    // }
-
-
     private void CreateToolBar()
-        {   tools = new Toolbar();
-
-            rightSplitView = new TwoPaneSplitView(0, 200, TwoPaneSplitViewOrientation.Horizontal);
-            leftSplitView = new TwoPaneSplitView
-            {
-                fixedPaneIndex = 0,
-                fixedPaneInitialDimension = 100,
-                orientation = TwoPaneSplitViewOrientation.Horizontal
-            };
-            CreateNewLanguageMenuPopup();
-            LanguageDropDown();
-        }
-
-
-        private void CreateColumns()
-        {
-            sceneColumn = new VisualElement();
-            GraphColumn = new VisualElement();
-            charColumn = new VisualElement();
-            
-            sceneColumn.Add(SceneHeader());
-            sceneColumn.Add(CreateSceneList());
-            
-            charColumn.Add(CharacterHeader());
-            charColumn.Add(CreateCharacterList());
-
-            
-            AddGraph();
-
-            rightSplitView.Add(charColumn);
-            rightSplitView.Add(GraphColumn);
-
-            leftSplitView.Add(sceneColumn);
-            leftSplitView.Add(rightSplitView);
-
-            rootVisualElement.Add(leftSplitView);
-            
-            rootVisualElement.Add(_popupOverlay);
-        }
-
-
-        private VisualElement HeaderMarginSet(VisualElement element)
-        {
-            return element;
-        }
+    {
+        _tools = new Toolbar();
+        
+        CreateNewLanguageMenuPopup();
+        LanguageDropDown();
     }
+
+
+    private void CreateColumns()
+    {
+        _sceneColumn = new VisualElement { style = { minWidth = 150, flexGrow = 1 } };
+        _graphColumn = new VisualElement { style = { minWidth = 500, flexGrow = 1 } };
+        _charColumn = new VisualElement { style = { minWidth = 200,flexGrow = 1 } };
+
+        _sceneColumn.Add(SceneHeader());
+        _sceneColumn.Add(CreateSceneList());
+
+        _charColumn.Add(CharacterHeader());
+        _charColumn.Add(CreateCharacterList());
+
+
+        AddGraph();
+        _leftSplitView.Add(_sceneColumn);
+
+        _rightSplitView.Add(_charColumn);
+        _rightSplitView.Add(_graphColumn);
+
+        _leftSplitView.Add(_rightSplitView);
+
+        rootVisualElement.Add(_leftSplitView);
+
+        rootVisualElement.Add(_popupOverlay);
+    }
+
+
+    private VisualElement HeaderMarginSet(VisualElement element)
+    {
+        return element;
+    }
+}

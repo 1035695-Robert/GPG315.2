@@ -40,11 +40,11 @@ public partial class DialogueWindow
 
     private ListView CreateSceneList()
     {
-        sceneListView = new ListView
+        _sceneListView = new ListView
         {
             reorderable = true,
 
-            itemsSource = SceneList,
+            itemsSource = sceneList,
             fixedItemHeight = 24,
             makeItem = () =>
             {
@@ -57,21 +57,21 @@ public partial class DialogueWindow
             bindItem = (element, index) =>
             {
                 var label = element as Label;
-                if (index < SceneList.Count && SceneList[index] != null)
+                if (index < sceneList.Count && sceneList[index] != null)
                 {
-                    label.text = string.IsNullOrEmpty(SceneList[index].SceneName)
-                        ? $" scene{index} (No Name)"
-                        : SceneList[index].SceneName;
+                    label.text = string.IsNullOrEmpty(sceneList[index].SceneName)
+                        ? $" new Scene"
+                        : sceneList[index].SceneName;
                 }
             }
-
         };
 
-        sceneListView.selectionChanged += OnSelection;
+        _sceneListView.selectionChanged += OnSelection;
 
-        return sceneListView;
+        return _sceneListView;
     }
-
+    
+    
     private void OnSelection(IEnumerable<object> scenes)
     {
         foreach (var scene in scenes)
@@ -80,24 +80,24 @@ public partial class DialogueWindow
             if (selectedScene != null)
             {
                 Debug.Log("selected");
-                selectedSceneData = selectedScene;
+                _selectedSceneData = selectedScene;
 
                 RefreshCharacter();
             }
         }
-
     }
-
+    
+    
     private void AddScene()
     {
         var newScene = CreateInstance<MasterDialogueListData>();
-        SceneList.Add(newScene);
-        sceneListView.Rebuild();
+        sceneList.Add(newScene);
+        _sceneListView.Rebuild();
 
-        selectedSceneData = newScene;
+        _selectedSceneData = newScene;
 
 
-        int index = SceneList.Count - 1;
-        sceneListView.SetSelection(new int[] { index });
+        int index = sceneList.Count - 1;
+        _sceneListView.SetSelection(new int[] { index });
     }
 }

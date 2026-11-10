@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 
@@ -8,7 +9,8 @@ public class MasterDialogueListData : ScriptableObject
 {
         public string SceneName;
         public List<CharacterData>  CharacterList = new List<CharacterData>();
-        public List<DialogueData>  DialogueList = new List<DialogueData>();
+       
+        [SerializeReference]public List<DialogueData>  DialogueList = new List<DialogueData>();
 }
 [Serializable]
 public class CharacterData
@@ -18,13 +20,15 @@ public class CharacterData
 }
 
 [Serializable]
-public class DialogueData
+public class DialogueData : Node
 {
-        public List<LanguageData> LanguageList;
+        public string Name;
         public string dialogueText;
+        public Color Colour;
+        public Vector3 nodePosition;
+
+        public List<string> childNodeIds;
 }
-
-
 
 [Serializable]
 public class LanguageData: ScriptableObject

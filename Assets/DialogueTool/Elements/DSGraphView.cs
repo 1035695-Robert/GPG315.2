@@ -14,15 +14,8 @@ public class DSGraphView : GraphView
         AddStyle();
     }
 
-    public DialogueNode CreateNode(Vector2 position, string Name, Color colour)
-    {
-        DialogueNode node = new DialogueNode();
-        
-        node.Initialize(position, Name, colour);
-        node.Draw();
-        
-       return node;
-    }
+
+   
 
     public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
     {
@@ -40,22 +33,12 @@ public class DSGraphView : GraphView
     private void AddManipulators()
     {
         SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
-        
+
         this.AddManipulator(new ContentDragger());
         this.AddManipulator(new SelectionDragger());
         this.AddManipulator(new RectangleSelector());
-        
-        
-       // this.AddManipulator(CreateNodeContextualMenu());
     }
 
-    // public IManipulator CreateNodeContextualMenu()
-    // {
-    //     ContextualMenuManipulator contextualMenuManipulator = new ContextualMenuManipulator(
-    //         menuEvent => menuEvent.menu.AppendAction("add Node", actionEvent=> AddElement(CreateNode(actionEvent.eventInfo.localMousePosition)))
-    //         );
-    //     return contextualMenuManipulator;
-    // }
 
     private void AddStyle()
     {

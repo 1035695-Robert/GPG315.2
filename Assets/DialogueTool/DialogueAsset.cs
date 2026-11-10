@@ -4,7 +4,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Dialogue" , menuName = "Dialogue Asset", order = 1)]
 public class DialogueAsset : ScriptableObject
 {
-  public string dialogueName = "new Dialogue";
+  public string dialogueAssetName = "new Dialogue";
+  public MasterDialogueListData masterDialogueListData;
+  
 }
 [CustomEditor(typeof(DialogueAsset))]
 public class CustomDialogue: Editor

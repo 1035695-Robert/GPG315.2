@@ -50,42 +50,51 @@ public partial class DialogueWindow
 
     private ListView CreateCharacterList()
     {
-        if (selectedSceneData == null)
-        {
-            var emptyListView = new ListView();
-            emptyListView.style.display = DisplayStyle.None;
-            return emptyListView;
-        }
-        charListView = new ListView
+        _charListView = new ListView
         {
             reorderable = true,
-            itemsSource = selectedSceneData.CharacterList,
             virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
-            
+
             makeItem = () =>
             {
-                var container = new VisualElement
+                var charDropdown = new Foldout()
+                { 
+                    name = "char-dropdown",
+                    text =  "New Character",
+                    value = false
+                };
+                
+                var nameContainer = new VisualElement
                 {
                     style =
                     {
-                        height = 100,
-                        flexDirection = FlexDirection.Column,
-                        backgroundColor = Color.black,
-                        marginTop = 4,
-                        marginBottom = 4
+                        flexDirection = FlexDirection.Row
                     }
                 };
-                
-                textName = new TextField {
-                    value = "Name",
+                nameContainer.Add(new Label{text  = "Name", style = { unityTextAlign = TextAnchor.MiddleLeft}});
+                var headerName = new TextField
+                {
+                    name = "character-name-field",
+                    
+                    style =
+                    {
+                        flexDirection = FlexDirection.RowReverse,
+                        flexGrow = 1,
+                        marginRight = 4,
+                        alignContent = Align.FlexStart
+                    },
                 };
-                container.Add(textName);
+                
+                nameContainer.Add(headerName);
+                charDropdown.Add(nameContainer);
+                
                 colourField = new ColorField
                 {
-                    value = new Color32(255, 255, 255, 255),
+                    name = "character-colour-field",
+                    value =  Color.white,
                 };
- 
-                container.Add(colourField);
+
+                charDropdown.Add(colourField);
 
                 var addNode = (new Button()
                 {
@@ -96,131 +105,117 @@ public partial class DialogueWindow
                         alignContent = Align.Center
                     }
                 });
-                container.Add(addNode);
-                return container;
+                charDropdown.Add(addNode);
+                return charDropdown;
             },
+            
             bindItem = (element, index) =>
             {
-                var label = element.Q <TextField>();
-                var colour = element.Q<ColorField>();
-                var button =  element.Q<Button>();
-                if (index < selectedSceneData.CharacterList.Count && selectedSceneData.CharacterList[index] != null)
+                var foldout = element.Q<Foldout>("char-dropdown");
+                var textField = element.Q<TextField>("character-name-field");
+                var colour = element.Q<ColorField>("character-colour-field");
+                var button = element.Q<Button>();
+                
+                if (index < _selectedSceneData.CharacterList.Count && _selectedSceneData.CharacterList[index] != null)
                 {
-                    var character = selectedSceneData.CharacterList[index];
+                    
+                    var character = _selectedSceneData.CharacterList[index];
+                    
+                    foldout.text = string.IsNullOrEmpty(character.Name)
+                        ? "Character"
+                        : character.Name;
+                    
+                    foldout.AddManipulator(CharacterSettings(character));
 
-                    if (label.userData is EventCallback<ChangeEvent<string>> oldName)
+
+                    //-- name binding--
+                    if (textField.userData is EventCallback<FocusOutEvent> oldName)
                     {
-                        label.UnregisterValueChangedCallback(oldName);
+                        textField.UnregisterCallback(oldName);
+                        textField.userData = null;
                     }
-                    label.value = character.Name;
-                    
-                    EventCallback<ChangeEvent<string>> newName = (evt) =>
+
+                    EventCallback<FocusOutEvent> newName = (evt) =>
                     {
-                        character.Name = evt.newValue;
+                        character.Name = textField.value;
+                        foldout.text = string.IsNullOrEmpty(textField.value) ?  "Character" : textField.value; 
                     };
-                    label.RegisterCallback(newName);
-                    label.userData = newName;
                     
+                    textField.RegisterCallback(newName);
+                    textField.userData = newName;
+                    textField.value = character.Name;
+
+                    // --colour Binding--
                     if (colour.userData is EventCallback<ChangeEvent<Color>> oldColour)
                     {
                         colour.UnregisterValueChangedCallback(oldColour);
                     }
-                    
-                    colour.value = character.Colour;
-                    
-                    EventCallback<ChangeEvent<Color>> newColor = (evt) =>
-                    {
-                        character.Colour = evt.newValue;
-                    };
-                    colour.RegisterCallback(newColor);
-                    label.userData = newColor;
-                    
 
+                    colour.value = character.Colour;
+
+                    EventCallback<ChangeEvent<Color>> newColor = (evt) => { character.Colour = evt.newValue; };
+                    colour.RegisterValueChangedCallback(newColor);
+                    colour.userData = newColor;
+                    
                     button.clickable = new Clickable(() => ActivateNode(index));
                 }
             }
         };
 
-        charListView.selectionChanged += OnSelection;
+        if (_selectedSceneData == null)
+        {
+            _charListView.style.display =  DisplayStyle.None;
+            return _charListView;
+        }
 
-        return charListView;
+        _charListView.itemsSource = _selectedSceneData.CharacterList;
+        _charListView.style.display =  DisplayStyle.Flex;
+
+
+        _charListView.selectionChanged += OnSelection;
+
+        return _charListView;
     }
+
+    private IManipulator CharacterSettings(CharacterData character)
+    {
+        CharacterData targetChar = character;
+        ContextualMenuManipulator contextualMenuManipulator = new ContextualMenuManipulator(
+            menuEvent => menuEvent.menu.AppendAction("Delete", action => DeleteCharacter(targetChar))
+            );
+        return contextualMenuManipulator;
+    }
+
+    private void DeleteCharacter(CharacterData targetChar)
+    {
+       _selectedSceneData.CharacterList.Remove(targetChar);
+       RefreshCharacter();
+    }
+
 
     private void AddCharacter()
     {
-        if (selectedSceneData == null) return;
+        if (_selectedSceneData == null) return;
 
-        selectedSceneData.CharacterList.Add(new CharacterData());
+        _selectedSceneData.CharacterList.Add(new CharacterData());
 
         RefreshCharacter();
 
-        int index = selectedSceneData.CharacterList.Count - 1; 
-        charListView.selectedIndex  = index;
-        charListView.ScrollToItem(index);
-        
-        //  Label newCharacter = new Label
-        //  {
-        //      style =
-        //      {
-        //          marginTop = 2.5f,
-        //          marginLeft = 2.5f,
-        //          marginRight = 2.5f,
-        //          marginBottom = 2.5f,
-        //          
-        //          flexDirection = FlexDirection.Column,
-        //          backgroundColor = Color.blue,
-        //          borderBottomColor = Color.black,
-        //          borderBottomWidth = 1, 
-        //          
-        //          borderTopLeftRadius = 5,
-        //          borderTopRightRadius = 5,
-        //          borderBottomLeftRadius =  5,
-        //          borderBottomRightRadius = 5,
-        //      }
-        //  };
-        //
-        //
-        //  //List<CharacterData> allCharacters = SceneList.SelectMany(d => d.DialogueList.ToList());    
-        //  
-        //  textName = new TextField { 
-        //      value = "Name",
-        //  };
-        // newCharacter.Add(textName); 
-        // colourField = new ColorField();
-        //
-        //  newCharacter.Add(colourField);
-        //
-        //  newCharacter.Add(new Button(ActivateNode)
-        //  {
-        //      text = "Add Character",
-        //      style =
-        //      {
-        //          height = 25,
-        //          alignContent = Align.Center
-        //      }
-        //  });
-        //
-        //  charColumn.Add(newCharacter);
+        int index = _selectedSceneData.CharacterList.Count - 1;
+        _charListView.selectedIndex = index;
+        _charListView.ScrollToItem(index);
     }
 
 
-    private void ActivateNode(int index)
-    {
-        Vector2 position = new Vector2(200, 200);
-        string characterName = selectedSceneData.CharacterList[index].Name;
-        Color colour = selectedSceneData.CharacterList[index].Colour; 
-        Debug.Log("characterID" + index + " name " + characterName + " color " + colour);
-        
-        DialogueNode node = graphView.CreateNode(position, characterName, colour);
-        graphView.AddElement(node);
-    }
+   
 
 
     private void RefreshCharacter()
     {
-        if (selectedSceneData == null) return;
-        charListView.Clear();
-        charListView.itemsSource = selectedSceneData.CharacterList;
-        charListView.Rebuild();
+        if (_selectedSceneData == null || _selectedSceneData.CharacterList == null) return;
+
+        _charListView.itemsSource = _selectedSceneData.CharacterList;
+        _charListView.style.display =  DisplayStyle.Flex;
+        _charListView.Rebuild();
     }
 }

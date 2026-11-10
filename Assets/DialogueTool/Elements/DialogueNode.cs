@@ -9,7 +9,8 @@ using UnityEngine.UIElements;
 namespace DialogueSystem.Elements
 {
     using DialogueSystem.Enumerators;
-[Serializable]
+
+    [Serializable]
     public class DialogueNode : Node
     {
         private string CharacterName;
@@ -18,18 +19,18 @@ namespace DialogueSystem.Elements
         public Texture2D profileIcon;
         public DialogueType dialogueType;
         public Color Colour;
-StyleSheet styleSheet;
+        StyleSheet styleSheet;
         public Image imageProfile;
 
-        public void Initialize(Vector2 position, string name, Color colour)
+        public void Initialize(DialogueData data)
         {
-            CharacterName =  name;
-            Colour = colour;
+            CharacterName = data.Name;
+            Colour = data.Colour;
 
             choices = new List<string>();
             text = "add Text.";
-            
-            SetPosition(new Rect(position, Vector2.zero));
+
+            SetPosition(new Rect(data.nodePosition, Vector2.zero));
         }
 
         public void Draw()
@@ -51,17 +52,17 @@ StyleSheet styleSheet;
                     width = 300
                 }
             };
-           titleContainer.style.height = 70;
-           titleContainer.style.width = 300;
+            titleContainer.style.height = 70;
+            titleContainer.style.width = 300;
             titleContainer.style.backgroundColor = Colour;
-            
+
             // profileIcon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/test.png");
             // if (profileIcon == null) Debug.LogWarning("couldn't find image profile");
-            
+
             Label imageSlot = new Label
             {
                 style =
-                { 
+                {
                     marginTop = 10,
                     marginBottom = 10,
                     height = 50,
@@ -72,12 +73,12 @@ StyleSheet styleSheet;
             container.Add(imageSlot);
             VisualElement textContainer = new VisualElement
             {
-                style = {flexGrow = 1}
+                style = { flexGrow = 1 }
             };
             TextField NameTextField = new TextField
             {
                 value = CharacterName,
-                isReadOnly =  true,
+                isReadOnly = true,
                 style =
                 {
                     marginTop = 10,
@@ -89,13 +90,13 @@ StyleSheet styleSheet;
             {
                 value = CharacterName,
                 isReadOnly = true,
-                
-                style = { height = 30}
+
+                style = { height = 30 }
             };
             textContainer.Add(dialogueField);
-            
+
             container.Add(textContainer);
-            
+
             titleContainer.Insert(1, container);
         }
 
@@ -123,7 +124,7 @@ StyleSheet styleSheet;
             {
                 text = "dialogue text"
             };
-            TextField textfield = new TextField() 
+            TextField textfield = new TextField()
             {
                 value = text,
                 multiline = true,
