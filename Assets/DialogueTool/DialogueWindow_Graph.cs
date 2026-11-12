@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using DialogueSystem.Elements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEditor;
 
 public partial class DialogueWindow
 {
@@ -9,7 +10,9 @@ public partial class DialogueWindow
     {
         _graphView = new DSGraphView();
         _graphView.name = "graphView";
+       
         _graphColumn.Add(_graphView);
+
         _graphView.StretchToParentSize();
     }
 
@@ -38,12 +41,13 @@ public partial class DialogueWindow
         _graphView.AddElement(node);
     }
 
+
     void RefreshGraph()
     {
         if (_selectedSceneData == null || _selectedSceneData.DialogueList == null) return;
 
         _charListView.itemsSource = _selectedSceneData.CharacterList;
-        _charListView.style.display =  DisplayStyle.Flex;
+        _charListView.style.display = DisplayStyle.Flex;
         _charListView.Rebuild();
     }
 }

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -21,17 +23,40 @@ public partial class DialogueWindow : EditorWindow
 
     private DSGraphView _graphView;
 
-    public List<MasterDialogueListData> sceneList = new List<MasterDialogueListData>();
-    private MasterDialogueListData _selectedSceneData;
+    [SerializeField] private MasterDialogue masterDialogueObject;
+    private SerializedObject _serializedObject;
 
-    private List<LanguageData> _languageList = new List<LanguageData>();
+    private SceneData _selectedSceneData;
 
 
-    public static void ShowWindow(DialogueAsset asset)
+    [OnOpenAsset]
+    public static bool OnOpenAsset(int instanceID, int line)
     {
-        var window = GetWindow<DialogueWindow>();
-        window.titleContent = new GUIContent("Dialogue");
+        MasterDialogue asset = EditorUtility.InstanceIDToObject(instanceID) as MasterDialogue;
+        if (asset is MasterDialogue dialogue)
+        {
+            var window = GetWindow<DialogueWindow>("Dialogue");
+            window.ShowWindow(dialogue);
+            window.Focus();
+            return true;
+        }
+
+        return false;
     }
+
+    private void ShowWindow(MasterDialogue asset)
+    {
+        masterDialogueObject = asset;
+
+        if (_sceneListView != null && masterDialogueObject != null)
+        {
+            _sceneListView.itemsSource = masterDialogueObject.sceneData;
+            _sceneListView.RefreshItems();
+        }
+
+        DisplayLanguages();
+    }
+
 
     public void CreateGUI()
     {
@@ -51,7 +76,7 @@ public partial class DialogueWindow : EditorWindow
             orientation = TwoPaneSplitViewOrientation.Horizontal
         };
         _rightSplitView.style.flexGrow = 1;
-        
+
         CreateToolBar();
         CreateColumns();
     }
@@ -59,7 +84,7 @@ public partial class DialogueWindow : EditorWindow
     private void CreateToolBar()
     {
         _tools = new Toolbar();
-        
+
         CreateNewLanguageMenuPopup();
         LanguageDropDown();
     }
@@ -69,7 +94,7 @@ public partial class DialogueWindow : EditorWindow
     {
         _sceneColumn = new VisualElement { style = { minWidth = 150, flexGrow = 1 } };
         _graphColumn = new VisualElement { style = { minWidth = 500, flexGrow = 1 } };
-        _charColumn = new VisualElement { style = { minWidth = 200,flexGrow = 1 } };
+        _charColumn = new VisualElement() { style = { minWidth = 200, flexGrow = 1 } };
 
         _sceneColumn.Add(SceneHeader());
         _sceneColumn.Add(CreateSceneList());
@@ -89,11 +114,5 @@ public partial class DialogueWindow : EditorWindow
         rootVisualElement.Add(_leftSplitView);
 
         rootVisualElement.Add(_popupOverlay);
-    }
-
-
-    private VisualElement HeaderMarginSet(VisualElement element)
-    {
-        return element;
     }
 }

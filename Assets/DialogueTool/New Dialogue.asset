@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c7560ff165efb74cb8367957616fd91, type: 3}
   m_Name: New Dialogue
   m_EditorClassIdentifier: 
-  dialogueName: new Dialogue
+  dialogueAssetName: new Dialogue
+  masterDialogueListData: {fileID: 0}

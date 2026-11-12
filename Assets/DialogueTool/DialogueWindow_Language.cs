@@ -72,13 +72,13 @@ public partial class DialogueWindow
     private void CreateNewLanguage(string newLangaugeName)
     {
         if (string.IsNullOrWhiteSpace(newLangaugeName)) return;
-        var newLanguage = CreateInstance<LanguageData>();
+        var newLanguage = new LanguageData();
 
         newLanguage.LanguageName = newLangaugeName.Trim();
 
-        _languageList.Add(newLanguage);
+        masterDialogueObject.languageData.Add(newLanguage);
         Debug.Log("new language: " + newLanguage.LanguageName);
-        Debug.Log(string.Join(",", _languageList.Select(lang => lang.LanguageName)));
+        Debug.Log(string.Join(",", masterDialogueObject.languageData.Select(lang => lang.LanguageName)));
 
         DisplayLanguages();
         SetPopupVisibility(false);
@@ -86,8 +86,10 @@ public partial class DialogueWindow
 
     private void DisplayLanguages()
     {
+        if(masterDialogueObject == null ||masterDialogueObject.languageData == null || _languageMenu ==  null ) return;
+       
         _languageMenu.menu.MenuItems().Clear();
-        foreach (string language in _languageList.Select(lang => lang.LanguageName))
+        foreach (string language in masterDialogueObject.languageData.Select(lang => lang.LanguageName))
         {
             _languageMenu.menu.AppendAction(language,
                 action =>
@@ -118,12 +120,12 @@ public partial class DialogueWindow
 
     private void DeleteLanguage()
     {
-        var selected = _languageList.FirstOrDefault(lang => lang.LanguageName == _currentSelectedLanguage);
+        var selected = masterDialogueObject.languageData.FirstOrDefault(lang => lang.LanguageName == _currentSelectedLanguage);
 
         if (selected != null)
         {
             Debug.Log("Delete: " + selected.LanguageName);
-            _languageList.Remove(selected);
+            masterDialogueObject.languageData.Remove(selected);
         }
 
         _currentSelectedLanguage = null;

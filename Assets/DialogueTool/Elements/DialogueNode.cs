@@ -75,26 +75,30 @@ namespace DialogueSystem.Elements
             {
                 style = { flexGrow = 1 }
             };
-            TextField NameTextField = new TextField
+            var NameTextField = new TextElement()
             {
-                value = CharacterName,
-                isReadOnly = true,
+                text = CharacterName,
+               
                 style =
                 {
+                    fontSize = 12,
+                    unityFontStyleAndWeight = FontStyle.Bold,
                     marginTop = 10,
+                    marginLeft = 10,
                     height = 15,
                 }
             };
-            textContainer.Add(NameTextField);
+            
             TextField dialogueField = new TextField
             {
-                value = CharacterName,
+                value = "",
                 isReadOnly = true,
 
                 style = { height = 30 }
             };
+            
+            textContainer.Add(NameTextField);
             textContainer.Add(dialogueField);
-
             container.Add(textContainer);
 
             titleContainer.Insert(1, container);

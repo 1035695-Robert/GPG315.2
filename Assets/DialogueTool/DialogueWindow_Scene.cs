@@ -44,7 +44,7 @@ public partial class DialogueWindow
         {
             reorderable = true,
 
-            itemsSource = sceneList,
+            itemsSource = masterDialogueObject != null ? masterDialogueObject.sceneData  : new List<SceneData>(),
             fixedItemHeight = 24,
             makeItem = () =>
             {
@@ -57,11 +57,11 @@ public partial class DialogueWindow
             bindItem = (element, index) =>
             {
                 var label = element as Label;
-                if (index < sceneList.Count && sceneList[index] != null)
+                if (index < masterDialogueObject.sceneData.Count && masterDialogueObject.sceneData[index] != null)
                 {
-                    label.text = string.IsNullOrEmpty(sceneList[index].SceneName)
+                    label.text = string.IsNullOrEmpty(masterDialogueObject.sceneData[index].SceneName)
                         ? $" new Scene"
-                        : sceneList[index].SceneName;
+                        : masterDialogueObject.sceneData[index].SceneName;
                 }
             }
         };
@@ -76,7 +76,7 @@ public partial class DialogueWindow
     {
         foreach (var scene in scenes)
         {
-            var selectedScene = scene as MasterDialogueListData;
+            var selectedScene = scene as SceneData;
             if (selectedScene != null)
             {
                 Debug.Log("selected");
@@ -90,14 +90,14 @@ public partial class DialogueWindow
     
     private void AddScene()
     {
-        var newScene = CreateInstance<MasterDialogueListData>();
-        sceneList.Add(newScene);
+        var newScene = new SceneData();
+        masterDialogueObject.sceneData.Add(newScene);
         _sceneListView.Rebuild();
 
         _selectedSceneData = newScene;
 
 
-        int index = sceneList.Count - 1;
+        int index = masterDialogueObject.sceneData.Count - 1;
         _sceneListView.SetSelection(new int[] { index });
     }
 }

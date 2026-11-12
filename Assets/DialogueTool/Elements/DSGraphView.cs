@@ -15,8 +15,10 @@ public class DSGraphView : GraphView
     }
 
 
-   
-
+    public void ClearGraph()
+    {
+        DeleteElements(graphElements);
+    }
     public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
     {
         List<Port> compatiblePorts = new List<Port>();
