@@ -11,23 +11,10 @@ using JsonUtility = UnityEditor.EditorUtility;
 [CreateAssetMenu(fileName = "New Dialogue", menuName = "Dialogue Asset", order = 1)]
 public class MasterDialogue : ScriptableObject
 {
-    public string dialogueAssetName = "new Dialogue";
     public List<SceneData> sceneData = new List<SceneData>();
     public List<LanguageData>  languageData = new List<LanguageData>();
-#if UNITY_EDITOR
-    private void Reset()
-    {
-        Texture2D icon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/DialogueTool/Icons/DialogueAssetIcon.png");
-        if (icon != null)
-        {
-            EditorGUIUtility.SetIconForObject(this, icon);
-        }
-    }
-#endif
 }
 
-
-[Serializable]
 public class SceneData
 {
     public string SceneName;
@@ -35,15 +22,11 @@ public class SceneData
 
     public List<DialogueData> DialogueList = new List<DialogueData>();
 }
-
-[Serializable]
 public class CharacterData
 {
     public string Name;
     public Color Colour;
 }
-
-[Serializable]
 public class DialogueData : Node
 {
     public string Name;
@@ -53,8 +36,6 @@ public class DialogueData : Node
 
     public List<string> childNodeIds;
 }
-
-[Serializable]
 public class LanguageData
 {
     public string LanguageName;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.AssetImporters;
 using UnityEditor.Callbacks;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -33,17 +34,20 @@ public partial class DialogueWindow : EditorWindow
     public static bool OnOpenAsset(int instanceID, int line)
     {
         MasterDialogue asset = EditorUtility.InstanceIDToObject(instanceID) as MasterDialogue;
+        
         if (asset is MasterDialogue dialogue)
         {
             var window = GetWindow<DialogueWindow>("Dialogue");
             window.ShowWindow(dialogue);
+
+            EditorUtility.SetDirty(asset);
             window.Focus();
             return true;
         }
 
         return false;
     }
-
+    
     private void ShowWindow(MasterDialogue asset)
     {
         masterDialogueObject = asset;
