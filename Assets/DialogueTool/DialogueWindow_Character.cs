@@ -11,16 +11,14 @@ using UnityEngine.Experimental.Audio;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using PopupWindow = UnityEditor.PopupWindow;
-
+using DialogueSystem.Enumerators;
+using UnityEngine.Rendering;
 
 public partial class DialogueWindow
 {
     EditorToolbarButton addCharacterButton;
-
-
     private TextField textName;
-
-    // private List<CharacterData> charRow = scenelistData.d
+    
     private VisualElement CharacterHeader()
     {
         var charRow = new VisualElement();
@@ -34,7 +32,7 @@ public partial class DialogueWindow
                 unityTextAlign = TextAnchor.MiddleLeft
             }
         });
-
+        
         addCharacterButton = new EditorToolbarButton(() => AddCharacter())
         {
             iconImage = EditorGUIUtility.IconContent("d_Toolbar Plus").image as Texture2D,
@@ -72,6 +70,7 @@ public partial class DialogueWindow
                     }
                 };
                 nameContainer.Add(new Label{text  = "Name", style = { unityTextAlign = TextAnchor.MiddleLeft}});
+                
                 var headerName = new TextField
                 {
                     name = "character-name-field",
@@ -97,8 +96,9 @@ public partial class DialogueWindow
                 charDropdown.Add(colourField);
 
                 var addNode = (new Button()
-                {
-                    text = "Add Character",
+                {                    
+                    name = "add-node",
+                    text = "Add Dialogue",
                     style =
                     {
                         height = 25,
@@ -114,8 +114,9 @@ public partial class DialogueWindow
                 var foldout = element.Q<Foldout>("char-dropdown");
                 var textField = element.Q<TextField>("character-name-field");
                 var colour = element.Q<ColorField>("character-colour-field");
-                var button = element.Q<Button>();
+                var button = element.Q<Button>("add-node");
                 
+               
                 if (index < _selectedSceneData.CharacterList.Count && _selectedSceneData.CharacterList[index] != null)
                 {
                     
@@ -126,8 +127,7 @@ public partial class DialogueWindow
                         : character.Name;
                     
                     foldout.AddManipulator(CharacterSettings(character));
-
-
+                    
                     //-- name binding--
                     if (textField.userData is EventCallback<FocusOutEvent> oldName)
                     {
@@ -156,8 +156,12 @@ public partial class DialogueWindow
                     EventCallback<ChangeEvent<Color>> newColor = (evt) => { character.Colour = evt.newValue; };
                     colour.RegisterValueChangedCallback(newColor);
                     colour.userData = newColor;
-                    
-                    button.clickable = new Clickable(() => ActivateNode(index));
+
+
+
+                    button.clickable = new Clickable(()=> ShowDropdownNodeTypes(button, index));
+                    // ActivateNode(index, DialogueType.SingleChoice));
+
                 }
             }
         };
@@ -170,13 +174,41 @@ public partial class DialogueWindow
 
         _charListView.itemsSource = _selectedSceneData.CharacterList;
         _charListView.style.display =  DisplayStyle.Flex;
-
-
-        _charListView.selectionChanged += OnSelection;
-
+        
         return _charListView;
     }
 
+    private void ShowDropdownNodeTypes(VisualElement button, int index)
+    {
+        var menu = new GenericDropdownMenu();
+        menu.AddItem("New Dialogue",false,()=>  ActivateNode(index, DialogueType.SingleChoice));
+        menu.AddItem("New Choices Dialogue",false,()=>  ActivateNode(index, DialogueType.MultiChoice));
+        menu.DropDown(button.worldBound, button, true,true);
+        menu.contentContainer.Query<Label>().ForEach(label =>
+        {
+            label.style.unityTextAlign = TextAnchor.MiddleCenter;
+            label.style.width = Length.Percent(100);
+            label.style.flexGrow = 1;
+            label.style.marginLeft = 0;
+            label.style.marginRight = 0;
+            label.style.marginBottom = 0;
+            label.style.marginTop= 0;
+           
+
+            if (label.parent != null)
+            {
+                label.parent.style.width = Length.Percent(100);
+                label.parent.style.flexGrow = 1;
+                label.parent.style.justifyContent = Justify.Center;
+
+            }
+        });
+        menu.contentContainer.Query<VisualElement>(classes: "unity-base-dropdown__checkmark").ForEach(cm =>
+        {
+
+        });
+    }
+    
     private IManipulator CharacterSettings(CharacterData character)
     {
         CharacterData targetChar = character;
@@ -212,8 +244,9 @@ public partial class DialogueWindow
 
     private void RefreshCharacter()
     {
-        if (_selectedSceneData == null || _selectedSceneData.CharacterList == null) return;
-
+        if (_selectedSceneData == null) return;
+        
+        _selectedSceneData.CharacterList??= new List<CharacterData>();
         _charListView.itemsSource = _selectedSceneData.CharacterList;
         _charListView.style.display =  DisplayStyle.Flex;
         _charListView.Rebuild();

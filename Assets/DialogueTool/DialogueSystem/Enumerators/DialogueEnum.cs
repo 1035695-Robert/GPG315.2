@@ -8,6 +8,5 @@ namespace DialogueSystem.Enumerators
     {
         SingleChoice,
         MultiChoice
-
     }
 }

@@ -5,6 +5,7 @@ using UnityEditor.AssetImporters;
 using UnityEditor.Callbacks;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 public partial class DialogueWindow : EditorWindow
@@ -24,7 +25,7 @@ public partial class DialogueWindow : EditorWindow
 
     private DSGraphView _graphView;
 
-    [SerializeField] private MasterDialogue masterDialogueObject;
+    [FormerlySerializedAs("masterDialogueObject")] [SerializeField] private MasterDialogueData masterDialogueDataObject;
     private SerializedObject _serializedObject;
 
     private SceneData _selectedSceneData;
@@ -33,9 +34,9 @@ public partial class DialogueWindow : EditorWindow
     [OnOpenAsset]
     public static bool OnOpenAsset(int instanceID, int line)
     {
-        MasterDialogue asset = EditorUtility.InstanceIDToObject(instanceID) as MasterDialogue;
+        MasterDialogueData asset = EditorUtility.InstanceIDToObject(instanceID) as MasterDialogueData;
         
-        if (asset is MasterDialogue dialogue)
+        if (asset is MasterDialogueData dialogue)
         {
             var window = GetWindow<DialogueWindow>("Dialogue");
             window.ShowWindow(dialogue);
@@ -48,16 +49,18 @@ public partial class DialogueWindow : EditorWindow
         return false;
     }
     
-    private void ShowWindow(MasterDialogue asset)
+    private void ShowWindow(MasterDialogueData asset)
     {
-        masterDialogueObject = asset;
+        masterDialogueDataObject = asset;
+        _selectedSceneData = null;
+        _graphView?.ClearGraph();
 
-        if (_sceneListView != null && masterDialogueObject != null)
+        if (_sceneListView != null && masterDialogueDataObject != null)
         {
-            _sceneListView.itemsSource = masterDialogueObject.sceneData;
+            _sceneListView.itemsSource = masterDialogueDataObject.sceneData;
             _sceneListView.RefreshItems();
         }
-
+        
         DisplayLanguages();
     }
 

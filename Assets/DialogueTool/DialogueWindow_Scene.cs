@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Rendering;
 using UnityEditor.Toolbars;
@@ -44,7 +45,7 @@ public partial class DialogueWindow
         {
             reorderable = true,
 
-            itemsSource = masterDialogueObject != null ? masterDialogueObject.sceneData  : new List<SceneData>(),
+            itemsSource = masterDialogueDataObject != null ? masterDialogueDataObject.sceneData : new List<SceneData>(),
             fixedItemHeight = 24,
             makeItem = () =>
             {
@@ -57,11 +58,12 @@ public partial class DialogueWindow
             bindItem = (element, index) =>
             {
                 var label = element as Label;
-                if (index < masterDialogueObject.sceneData.Count && masterDialogueObject.sceneData[index] != null)
+                if (index < masterDialogueDataObject.sceneData.Count &&
+                    masterDialogueDataObject.sceneData[index] != null)
                 {
-                    label.text = string.IsNullOrEmpty(masterDialogueObject.sceneData[index].SceneName)
+                    label.text = string.IsNullOrEmpty(masterDialogueDataObject.sceneData[index].SceneName)
                         ? $" new Scene"
-                        : masterDialogueObject.sceneData[index].SceneName;
+                        : masterDialogueDataObject.sceneData[index].SceneName;
                 }
             }
         };
@@ -70,34 +72,49 @@ public partial class DialogueWindow
 
         return _sceneListView;
     }
-    
-    
+
+
     private void OnSelection(IEnumerable<object> scenes)
     {
-        foreach (var scene in scenes)
+        var selectedScene = scenes?.OfType<SceneData>().FirstOrDefault();
+        if (selectedScene == null)
         {
-            var selectedScene = scene as SceneData;
-            if (selectedScene != null)
-            {
-                Debug.Log("selected");
-                _selectedSceneData = selectedScene;
-
-                RefreshCharacter();
-            }
+            _selectedSceneData = null;
+            _graphView?.ClearGraph();
+            _charListView.style.display = DisplayStyle.None;
+            return;
         }
+
+        _selectedSceneData = selectedScene;
+
+        RefreshCharacter();
+        RefreshGraph();
     }
-    
-    
+
+
     private void AddScene()
     {
-        var newScene = new SceneData();
-        masterDialogueObject.sceneData.Add(newScene);
+        if (masterDialogueDataObject == null) return;
+        
+        var newScene = CreateInstance<SceneData>();
+        // string defaultName = "Scene" + (masterDialogueDataObject.sceneData.Count + 1);
+        // newScene.name = defaultName;
+        // newScene.Initialize(defaultName);
+        //
+        // AssetDatabase.AddObjectToAsset(newScene, masterDialogueDataObject);
+        masterDialogueDataObject.sceneData.Add(newScene);
+        //
+        //
+        // EditorUtility.SetDirty(masterDialogueDataObject);
+        // AssetDatabase.SaveAssets();
+        // AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(masterDialogueDataObject));
+        //
         _sceneListView.Rebuild();
 
         _selectedSceneData = newScene;
 
 
-        int index = masterDialogueObject.sceneData.Count - 1;
+        int index = masterDialogueDataObject.sceneData.Count - 1;
         _sceneListView.SetSelection(new int[] { index });
     }
 }

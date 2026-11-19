@@ -8,36 +8,45 @@ using UnityEngine.UIElements;
 
 namespace DialogueSystem.Elements
 {
-    using DialogueSystem.Enumerators;
+    using Enumerators;
+    using ElementUtility;
 
     [Serializable]
     public class DialogueNode : Node
     {
-        private string CharacterName;
-        public List<string> choices;
-        public string text;
-        public Texture2D profileIcon;
-        public DialogueType dialogueType;
-        public Color Colour;
-        StyleSheet styleSheet;
-        public Image imageProfile;
+        public DialogueData Data {get;set;}
+        public string ID { get; set; }
+        private string CharacterName { get; set; }
+        public List<ChoiceSaveData> Choices { get; set; }
+        public string Text { get; set; }
+        public Texture2D ProfileIcon { get; set; }
+        public DialogueType DialogueType { get; set; }
+        public Color Colour { get; set; }
 
-        public void Initialize(DialogueData data)
+
+        private StyleSheet _styleSheet;
+        public Image ImageProfile;
+        protected VisualElement TextContainer;
+        protected DSGraphView GraphView;
+
+        public virtual void Initialize(DialogueData data, DSGraphView graphView)
         {
-            CharacterName = data.Name;
-            Colour = data.Colour;
+            Data = data;
+            GraphView ??= graphView;
+            ID = string.IsNullOrEmpty(data.ID) ? Guid.NewGuid().ToString() : Data.ID;
+            CharacterName = Data.Name;
+            Colour = Data.Colour;
+            DialogueType = Data.Type;
+            Choices = Data.Choices ?? new List<ChoiceSaveData>();
+            Text = "add Text.";
 
-            choices = new List<string>();
-            text = "add Text.";
-
-            SetPosition(new Rect(data.nodePosition, Vector2.zero));
+            SetPosition(new Rect(Data.Position, Vector2.zero));
         }
 
-        public void Draw()
+        public virtual void Draw()
         {
             TitleContainer();
             InputContainer();
-            OutputContainer();
             TextFieldContainer();
         }
 
@@ -71,66 +80,33 @@ namespace DialogueSystem.Elements
                 }
             };
             container.Add(imageSlot);
-            VisualElement textContainer = new VisualElement
+            TextContainer = new VisualElement
             {
                 style = { flexGrow = 1 }
             };
-            var NameTextField = new TextElement()
-            {
-                text = CharacterName,
-               
-                style =
-                {
-                    fontSize = 12,
-                    unityFontStyleAndWeight = FontStyle.Bold,
-                    marginTop = 10,
-                    marginLeft = 10,
-                    height = 15,
-                }
-            };
-            
-            TextField dialogueField = new TextField
-            {
-                value = "",
-                isReadOnly = true,
+            var nameTextField = DialogueElementUtility.CreateTextField(CharacterName);
 
-                style = { height = 30 }
-            };
-            
-            textContainer.Add(NameTextField);
-            textContainer.Add(dialogueField);
-            container.Add(textContainer);
+            TextContainer.Add(nameTextField);
+            container.Add(TextContainer);
 
             titleContainer.Insert(1, container);
         }
 
         private void InputContainer()
         {
-            Port inputPort =
-                InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(bool));
-            inputPort.portName = "Input";
+            Port inputPort = this.CreatePort("Dialogue Connection", Orientation.Horizontal, Direction.Input,
+                Port.Capacity.Multi);
             inputContainer.Add(inputPort);
         }
 
-        private void OutputContainer()
-        {
-            Port outputPort =
-                InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, typeof(bool));
-            outputPort.portName = "Output";
-
-            outputContainer.Add(outputPort);
-        }
 
         private void TextFieldContainer()
         {
             VisualElement customContainer = new VisualElement();
-            Foldout foldout = new Foldout()
-            {
-                text = "dialogue text"
-            };
+            Foldout foldout = DialogueElementUtility.CreateFoldout("Dialogue Text");
             TextField textfield = new TextField()
             {
-                value = text,
+                value = Text,
                 multiline = true,
                 style =
                 {
@@ -140,7 +116,6 @@ namespace DialogueSystem.Elements
             foldout.Add(textfield);
             customContainer.Add(foldout);
             extensionContainer.Add(customContainer);
-            RefreshExpandedState();
         }
     }
 }
