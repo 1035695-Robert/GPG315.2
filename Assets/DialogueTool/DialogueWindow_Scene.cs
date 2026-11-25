@@ -49,9 +49,13 @@ public partial class DialogueWindow
             fixedItemHeight = 24,
             makeItem = () =>
             {
-                var label = new Label
+                var label = new Label()
                 {
-                    style = { unityTextAlign = TextAnchor.MiddleLeft }
+                    style =
+                    {
+                        unityTextAlign = TextAnchor.MiddleLeft,
+                        marginLeft = 4,
+                    }
                 };
                 return label;
             },
@@ -61,8 +65,10 @@ public partial class DialogueWindow
                 if (index < masterDialogueDataObject.sceneData.Count &&
                     masterDialogueDataObject.sceneData[index] != null)
                 {
+                    var scene = masterDialogueDataObject.sceneData[index];
+                  
                     label.text = string.IsNullOrEmpty(masterDialogueDataObject.sceneData[index].SceneName)
-                        ? $" new Scene"
+                        ? $"Scene {index+1}"
                         : masterDialogueDataObject.sceneData[index].SceneName;
                 }
             }
@@ -72,6 +78,7 @@ public partial class DialogueWindow
 
         return _sceneListView;
     }
+    
 
 
     private void OnSelection(IEnumerable<object> scenes)
@@ -86,7 +93,7 @@ public partial class DialogueWindow
         }
 
         _selectedSceneData = selectedScene;
-
+        
         RefreshCharacter();
         RefreshGraph();
     }
@@ -97,18 +104,18 @@ public partial class DialogueWindow
         if (masterDialogueDataObject == null) return;
         
         var newScene = CreateInstance<SceneData>();
-        // string defaultName = "Scene" + (masterDialogueDataObject.sceneData.Count + 1);
-        // newScene.name = defaultName;
-        // newScene.Initialize(defaultName);
-        //
-        // AssetDatabase.AddObjectToAsset(newScene, masterDialogueDataObject);
+        string defaultName = "Scene" + (masterDialogueDataObject.sceneData.Count + 1);
+        newScene.name = defaultName;
+        newScene.Initialize(defaultName);
+        
+        AssetDatabase.AddObjectToAsset(newScene, masterDialogueDataObject);
         masterDialogueDataObject.sceneData.Add(newScene);
-        //
-        //
-        // EditorUtility.SetDirty(masterDialogueDataObject);
-        // AssetDatabase.SaveAssets();
-        // AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(masterDialogueDataObject));
-        //
+        
+        
+        EditorUtility.SetDirty(masterDialogueDataObject);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(masterDialogueDataObject));
+        
         _sceneListView.Rebuild();
 
         _selectedSceneData = newScene;

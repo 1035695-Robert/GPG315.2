@@ -10,12 +10,17 @@ public class DialogueSingleChoice : DialogueNode
   {
     base.Initialize(data, graphView);
     DialogueType = DialogueType.SingleChoice;
-    ChoiceSaveData saveData = new ChoiceSaveData
+   
+    if(Choices.Count == 0)
     {
-      Text = "Next Dialogue"
-    };
+      ChoiceSaveData saveData = new ChoiceSaveData
+      {
+        Text = "Next Dialogue"
+      };
+      Choices.Add(saveData);
+    }
     
-    Choices.Add(saveData);
+    
   }
 
   public override void Draw()

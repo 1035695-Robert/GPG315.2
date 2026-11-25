@@ -36,15 +36,16 @@ public partial class DialogueWindow
     {
         if (_selectedSceneData == null || _selectedSceneData.DialogueList == null) return;
 
+        
         _charListView.itemsSource = _selectedSceneData.CharacterList;
         _charListView.style.display = DisplayStyle.Flex;
         _charListView.Rebuild();
 
         _graphView.ClearGraph();
-        
+        _graphView.SetSceneData(_selectedSceneData);
+
         foreach (DialogueData dialogue in _selectedSceneData.DialogueList)
         {
-            
             _graphView.CreateNode(dialogue);
         }
     }

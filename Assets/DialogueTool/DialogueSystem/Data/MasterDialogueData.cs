@@ -29,16 +29,14 @@ public class SceneData : ScriptableObject
     [field: SerializeField] public List<DialogueData> DialogueList { get; set; } = new();
 
     [field: SerializeField] public List<string> OldNodeNames { get; set; }
-
-
-    public void Initialize(string sceneName)
+    public void Initialize(string fileName)
     {
-        SceneName = sceneName;
-
-        CharacterList = new List<CharacterData>();
+        SceneName = fileName;
         DialogueList = new List<DialogueData>();
+        OldNodeNames = new List<string>();
     }
 }
+
 [Serializable]
 public class CharacterData
 {
@@ -49,19 +47,19 @@ public class CharacterData
 [Serializable]
 public class DialogueData
 {
-    public string ID { get; set; }
-    public string Name { get; set; }
-    public string DialogueText { get; set; }
-    public List<ChoiceSaveData> Choices { get; set; }
-    public Color Colour { get; set; }
-    public DialogueType Type { get; set; }
-    public Vector3 Position { get; set; }
+   [field: SerializeField]  public string ID { get; set; }
+   [field: SerializeField]  public string Name { get; set; }
+   [field: SerializeField]  public string DialogueText { get; set; }
+   [field: SerializeField]  public List<ChoiceSaveData> Choices { get; set; }
+   [field: SerializeField]  public Color Colour { get; set; }
+   [field: SerializeField]  public DialogueType Type { get; set; }
+   [field: SerializeField]  public Vector3 Position { get; set; }
 }
-
+[Serializable]
 public class ChoiceSaveData
 {
-    public string Text { get; set; }
-    public string NodeId { get; set; }
+    [field: SerializeField]  public string Text { get; set; }
+    [field: SerializeField]  public string NodeId { get; set; }
 }
 
 

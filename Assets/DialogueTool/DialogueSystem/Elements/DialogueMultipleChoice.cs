@@ -11,12 +11,14 @@ public class DialogueMultipleChoice : DialogueNode
     {
         base.Initialize(data, graphView);
         DialogueType = DialogueType.MultiChoice;
-
-        ChoiceSaveData choiceData = new ChoiceSaveData
+        if (Choices.Count == 0)
         {
-            Text = "new Choice"
-        };
-        Choices.Add(choiceData);
+            ChoiceSaveData choiceData = new ChoiceSaveData
+            {
+                Text = "new Choice"
+            };
+            Choices.Add(choiceData);
+        }
     }
 
     public override void Draw()
@@ -62,6 +64,7 @@ public class DialogueMultipleChoice : DialogueNode
 
             Choices.Remove(choiceData);
             outputContainer.Remove(choicePort);
+            GraphView.SaveChanges();
         });
         TextField choiceText =
             DialogueElementUtility.CreateTextField(choiceData.Text, evt =>

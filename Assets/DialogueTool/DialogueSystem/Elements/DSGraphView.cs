@@ -15,12 +15,11 @@ public class DSGraphView : GraphView
     {
         AddManipulators();
         AddGridBackground();
-        AddMiniMap();
+        //AddMiniMap();
         AddStyle();
-        AddMiniMapStyles();
+        //AddMiniMapStyles();
         onGraphVeiwChange();
     }
-
 
 
     public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
@@ -50,7 +49,7 @@ public class DSGraphView : GraphView
         DialogueNode node = data.Type == DialogueType.SingleChoice
             ? new DialogueSingleChoice()
             : new DialogueMultipleChoice();
-      
+
         node.Initialize(data, this);
         node.Draw();
         AddElement(node);
@@ -80,21 +79,27 @@ public class DSGraphView : GraphView
         Insert(0, gridBackground);
     }
 
-    private void AddMiniMapStyles()
+    // private void AddMiniMapStyles()
+    // {
+    //     StyleColor backgroundColor = new StyleColor(new Color32(29, 29, 30, 255));
+    //     StyleColor borderColour = new StyleColor(new Color32(51, 51, 51, 255));
+    //     miniMap.style.backgroundColor = backgroundColor;
+    //     miniMap.style.borderBottomColor = borderColour;
+    //     miniMap.style.borderTopColor = borderColour;
+    //     miniMap.style.borderLeftColor = borderColour;
+    //     miniMap.style.borderRightColor = borderColour;
+    // }
+
+    public void SetSceneData(SceneData selectedSceneData)
     {
-        StyleColor backgroundColor = new StyleColor(new Color32(29, 29, 30, 255));
-        StyleColor borderColour = new StyleColor(new Color32(51, 51, 51, 255));
-        miniMap.style.backgroundColor = backgroundColor;
-        miniMap.style.borderBottomColor = borderColour;
-        miniMap.style.borderTopColor = borderColour;
-        miniMap.style.borderLeftColor = borderColour;
-        miniMap.style.borderRightColor = borderColour;
+        _currentSceneData = selectedSceneData;
     }
 
     private void onGraphVeiwChange()
     {
         graphViewChanged = (changes) =>
         {
+            Debug.Log("change");
             if (_currentSceneData == null) return changes;
             if (changes.edgesToCreate != null)
             {
@@ -133,9 +138,17 @@ public class DSGraphView : GraphView
                 }
             }
 
+            EditorUtility.SetDirty(_currentSceneData);
             return changes;
         };
     }
+
+    public void SaveChanges()
+    {
+        if (_currentSceneData != null)
+            EditorUtility.SetDirty(_currentSceneData);
+    }
+
     public void ClearGraph()
     {
         _currentSceneData = null;
